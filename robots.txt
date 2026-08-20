@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://random-ppobgi.pages.dev/sitemap.xml
