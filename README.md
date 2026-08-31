@@ -7,23 +7,23 @@
 - 운영 주소: https://random-ppobgi.pages.dev/
 - 현재 버전: v50
 
-## 운영 소속
+## 저장소 역할
 
-이 저장소는 실제 랜덤뽑기 서비스의 코드 단일 원본입니다.
+이 `gsh4124-cyber/random-ppobgi` 저장소가 랜덤뽑기의 **실제 코드와 현재 운영상태 인계의 단일 원본**입니다.
 
-- 운영·판단 Canonical: 황제 Vault `자동 사업운영/바이브코딩/00 본부/random-ppobgi_운영.md`
-- 집계 데이터: 황제 Vault `자동 사업운영/바이브코딩/데이터/random-ppobgi/`
-- 상위 소속: `바이브코딩`
+- 상위 영역: 황제 Vault `자동 사업운영/바이브코딩/`
 - ChatGPT 통합 관제: `자동 사업운영`
 - 실제 실행창: `랜덤뽑기 Work`
-- 코드 저장소: `gsh4124-cyber/random-ppobgi`
-- 기술 현재상태 인계: `PROJECT_STATUS.md`
+- 현재 상태 인계: `PROJECT_STATUS.md`
+- private 집계 데이터: 황제 Vault `자동 사업운영/바이브코딩/데이터/random-ppobgi/analytics_latest.json`
+
+별도의 한글 `랜덤뽑기` 코드·운영 폴더를 만들지 않습니다.
 
 ## 표준 로컬 경로
 
 `C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/random-ppobgi`
 
-부모 `hwangje-vault`는 이 로컬 코드 폴더를 `.gitignore`로 제외하며, 이 폴더 자체는 `random-ppobgi` 저장소로 독립 관리합니다.
+부모 `hwangje-vault`는 이 로컬 폴더를 `.gitignore`로 제외하며, `random-ppobgi` 자체 Git 이력은 이 저장소에서 독립 관리합니다.
 
 ## 게임
 
@@ -45,8 +45,4 @@
 python3 -m http.server 8000
 ```
 
-브라우저에서 `http://localhost:8000`을 엽니다. 루트의 `index.html`을 직접 열어도 기본 게임은 실행되지만, `/about/` 같은 경로 확인에는 정적 서버 사용을 권장합니다.
-
-## 문의
-
-오류 제보와 개선 의견: https://github.com/gsh4124-cyber/random-ppobgi/issues
+브라우저에서 `http://localhost:8000`을 엽니다.
