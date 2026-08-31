@@ -14,7 +14,14 @@
 - 운영·판단 Canonical: 황제 Vault `자동 사업운영/바이브코딩/랜덤뽑기/`
 - 상위 소속: `바이브코딩`
 - ChatGPT 사용자 표면: `자동 사업운영` 통합 UI
-- 코드 저장소는 실행·배포·버전관리 편의를 위해 `gsh4124-cyber/random-ppobgi`로 별도 유지합니다.
+- 코드 저장소는 실행·배포·버전관리를 위해 `gsh4124-cyber/random-ppobgi`로 별도 유지합니다.
+- 기술 현재상태 인계: `PROJECT_STATUS.md`
+
+## 표준 로컬 경로
+
+`C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/코드자산/random-ppobgi`
+
+`코드자산/`은 부모 `hwangje-vault`에서 제외되며, 이 폴더 자체는 `random-ppobgi` 저장소로 독립 관리합니다.
 
 ## 게임
 
