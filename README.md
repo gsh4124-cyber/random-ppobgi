@@ -19,9 +19,11 @@
 
 ## 표준 로컬 경로
 
-`C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/코드자산/random-ppobgi`
+`C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/랜덤뽑기/random-ppobgi`
 
-`코드자산/`은 부모 `hwangje-vault`에서 제외되며, 이 폴더 자체는 `random-ppobgi` 저장소로 독립 관리합니다.
+황제 PC에서는 운영자료가 있는 한글 `랜덤뽑기/` 폴더 안에 이 코드 저장소를 둡니다. 부모 `hwangje-vault`는 `랜덤뽑기/random-ppobgi/`만 `.gitignore`로 제외하며, 이 폴더 자체는 `random-ppobgi` 저장소로 독립 관리합니다.
+
+즉 한 제품 폴더 안에서 운영자료와 코드를 함께 찾되, 두 Git 저장소의 이력은 섞지 않습니다.
 
 ## 게임
 
