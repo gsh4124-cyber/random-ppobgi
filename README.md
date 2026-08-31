@@ -9,21 +9,21 @@
 
 ## 운영 소속
 
-이 저장소는 실제 랜덤뽑기 서비스의 코드 원본입니다.
+이 저장소는 실제 랜덤뽑기 서비스의 코드 단일 원본입니다.
 
-- 운영·판단 Canonical: 황제 Vault `자동 사업운영/바이브코딩/랜덤뽑기/`
+- 운영·판단 Canonical: 황제 Vault `자동 사업운영/바이브코딩/00 본부/random-ppobgi_운영.md`
+- 집계 데이터: 황제 Vault `자동 사업운영/바이브코딩/데이터/random-ppobgi/`
 - 상위 소속: `바이브코딩`
-- ChatGPT 사용자 표면: `자동 사업운영` 통합 UI
-- 코드 저장소는 실행·배포·버전관리를 위해 `gsh4124-cyber/random-ppobgi`로 별도 유지합니다.
+- ChatGPT 통합 관제: `자동 사업운영`
+- 실제 실행창: `랜덤뽑기 Work`
+- 코드 저장소: `gsh4124-cyber/random-ppobgi`
 - 기술 현재상태 인계: `PROJECT_STATUS.md`
 
 ## 표준 로컬 경로
 
-`C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/랜덤뽑기/random-ppobgi`
+`C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/random-ppobgi`
 
-황제 PC에서는 운영자료가 있는 한글 `랜덤뽑기/` 폴더 안에 이 코드 저장소를 둡니다. 부모 `hwangje-vault`는 `랜덤뽑기/random-ppobgi/`만 `.gitignore`로 제외하며, 이 폴더 자체는 `random-ppobgi` 저장소로 독립 관리합니다.
-
-즉 한 제품 폴더 안에서 운영자료와 코드를 함께 찾되, 두 Git 저장소의 이력은 섞지 않습니다.
+부모 `hwangje-vault`는 이 로컬 코드 폴더를 `.gitignore`로 제외하며, 이 폴더 자체는 `random-ppobgi` 저장소로 독립 관리합니다.
 
 ## 게임
 
