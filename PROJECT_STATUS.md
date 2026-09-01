@@ -2,10 +2,10 @@
 
 - 마지막 갱신: 2026-09-01
 - 저장소 역할: 랜덤뽑기 웹서비스의 코드·배포·기술상태 원본
-- 상위 영역: 황제 Vault `자동 사업운영/바이브코딩/랜덤뽑기/`
+- 상위 상태 원본: 황제 Vault `자동 사업운영/바이브코딩/_INDEX.md`
 - ChatGPT 통합 관제: `자동 사업운영`
 - ChatGPT 실행창: `랜덤뽑기 Work`
-- 표준 로컬 경로: `C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/랜덤뽑기/random-ppobgi`
+- 표준 로컬 경로: `C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/random-ppobgi`
 
 ## 현재 상태
 
@@ -21,11 +21,23 @@
 
 - 핵심 이벤트: `game_start`, `game_complete`, `reroll`, `exclude_reroll`
 - Production D1: `random-ppobgi-analytics`
-- Vault snapshot: `자동 사업운영/바이브코딩/랜덤뽑기/analytics_latest.json`
+- Vault snapshot: `자동 사업운영/바이브코딩/랜덤뽑기_analytics_latest.json`
 - workflow: `hwangje-vault/.github/workflows/random-picker-analytics-snapshot.yml`
 - workflow 기준 매일 00:20 KST에 최근 14일 aggregate를 갱신하도록 복구됨
 - 이름·당첨내용·입력문구·사용자 ID·세션 ID·광고 ID·쿠키는 수집하지 않음
 - 최초 검증 snapshot은 `game_start 8 / game_complete 6`으로 표본이 작아 제품 성과로 해석하지 않음
+
+## 사고분리·검증 순서
+
+한 실행창에서 연속 작업하더라도 다음 판단을 한 덩어리로 합치지 않는다.
+
+> 실제 데이터 회수 → 사실 정리 → 원인 가설 → 변경 설계 → 구현 → 독립 QA·회귀검수 → 배포 → 다시 실제 데이터
+
+- 데이터 수치는 먼저 사실로만 정리하고, 원인 설명은 별도 가설로 둔다.
+- 개선 아이디어가 떠올랐다는 이유로 성과 원인이 확인됐다고 처리하지 않는다.
+- 구현자가 의도한 동작은 QA 증거가 아니다. QA는 실제 실행 결과와 기존 기능 회귀를 다시 확인한다.
+- 내부 QA 통과는 외부 사용성과·검색성과·수익성과가 아니다.
+- 배포 후 실제 데이터가 이전 가설과 다르면 가설을 수정한다.
 
 ## 현재 병목
 
