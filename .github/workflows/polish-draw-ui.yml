@@ -21,79 +21,14 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import base64
 
           path = Path('index.html')
           text = path.read_text(encoding='utf-8')
-
           marker = '/* v51 unified draw stage shell */'
+          css_b64 = 'Ci8qIHY1MSB1bmlmaWVkIGRyYXcgc3RhZ2Ugc2hlbGwgKi8KI251bWJlck1vZGUgLnJlc3VsdC1ub3Rle21hcmdpbi10b3A6OHB4IWltcG9ydGFudDttYXJnaW4tYm90dG9tOjE2cHghaW1wb3J0YW50fQouc3RhZ2UsCi5zdGFnZS50aGVtZS1sYWRkZXIsLnN0YWdlLnRoZW1lLXdoZWVsLC5zdGFnZS50aGVtZS1sb3QsLnN0YWdlLnRoZW1lLXBpbmJhbGwsCi5zdGFnZS50aGVtZS1yYWNlLC5zdGFnZS50aGVtZS1jYXBzdWxlLC5zdGFnZS50aGVtZS1zbG90LC5zdGFnZS50aGVtZS1ib21iewogIGJhY2tncm91bmQ6I2ZmZmRmOCFpbXBvcnRhbnQ7CiAgY29sb3I6IzI5MjMxZCFpbXBvcnRhbnQ7CiAgYm9yZGVyOjFweCBzb2xpZCByZ2JhKDIyNiwyMTksMjA4LC45NikhaW1wb3J0YW50OwogIGJvcmRlci1yYWRpdXM6MzBweCFpbXBvcnRhbnQ7CiAgcGFkZGluZzoxNHB4IWltcG9ydGFudDsKICBib3gtc2hhZG93OjAgMTZweCA0NHB4IHJnYmEoNDgsNDAsMjksLjA5KSFpbXBvcnRhbnQ7Cn0KLnN0YWdlOjpiZWZvcmUsLnN0YWdlLnRoZW1lLWxhZGRlcjo6YmVmb3JlLC5zdGFnZS50aGVtZS13aGVlbDo6YmVmb3JlLC5zdGFnZS50aGVtZS1sb3Q6OmJlZm9yZSwKLnN0YWdlLnRoZW1lLXBpbmJhbGw6OmJlZm9yZSwuc3RhZ2UudGhlbWUtcmFjZTo6YmVmb3JlLC5zdGFnZS50aGVtZS1jYXBzdWxlOjpiZWZvcmUsCi5zdGFnZS50aGVtZS1zbG90OjpiZWZvcmUsLnN0YWdlLnRoZW1lLWJvbWI6OmJlZm9yZXtkaXNwbGF5Om5vbmUhaW1wb3J0YW50fQouc3RhZ2UtaGVhZHttYXJnaW46MCAycHggMTJweCFpbXBvcnRhbnQ7cGFkZGluZzoycHggMnB4IDAhaW1wb3J0YW50O21pbi1oZWlnaHQ6MjhweH0KLnN0YWdlLWhlYWQgc3Ryb25nLAouc3RhZ2UudGhlbWUtbGFkZGVyIC5zdGFnZS1oZWFkIHN0cm9uZywuc3RhZ2UudGhlbWUtd2hlZWwgLnN0YWdlLWhlYWQgc3Ryb25nLC5zdGFnZS50aGVtZS1sb3QgLnN0YWdlLWhlYWQgc3Ryb25nLAouc3RhZ2UudGhlbWUtcGluYmFsbCAuc3RhZ2UtaGVhZCBzdHJvbmcsLnN0YWdlLnRoZW1lLXJhY2UgLnN0YWdlLWhlYWQgc3Ryb25nLC5zdGFnZS50aGVtZS1jYXBzdWxlIC5zdGFnZS1oZWFkIHN0cm9uZywKLnN0YWdlLnRoZW1lLXNsb3QgLnN0YWdlLWhlYWQgc3Ryb25nLC5zdGFnZS50aGVtZS1ib21iIC5zdGFnZS1oZWFkIHN0cm9uZ3sKICBtYXgtd2lkdGg6bm9uZSFpbXBvcnRhbnQ7YmFja2dyb3VuZDp0cmFuc3BhcmVudCFpbXBvcnRhbnQ7Ym9yZGVyOjAhaW1wb3J0YW50O3BhZGRpbmc6MCFpbXBvcnRhbnQ7CiAgY29sb3I6IzI5MjMxZCFpbXBvcnRhbnQ7Zm9udC1zaXplOjE0cHghaW1wb3J0YW50O2ZvbnQtd2VpZ2h0Ojk1MCFpbXBvcnRhbnQ7bGV0dGVyLXNwYWNpbmc6LS4ycHghaW1wb3J0YW50Owp9Ci5zdGFnZS1zdGF0dXMsLnN0YWdlW2NsYXNzKj0idGhlbWUtIl0gLnN0YWdlLXN0YXR1c3tjb2xvcjojOTQ4ODdhIWltcG9ydGFudDtmb250LXNpemU6MTJweCFpbXBvcnRhbnQ7Zm9udC13ZWlnaHQ6ODUwIWltcG9ydGFudH0KLnZpc3VhbHsKICB3aWR0aDoxMDAlIWltcG9ydGFudDttaW4taGVpZ2h0OjMwMHB4IWltcG9ydGFudDtwYWRkaW5nOjE0cHghaW1wb3J0YW50OwogIGJhY2tncm91bmQ6I2Y3ZjNlYyFpbXBvcnRhbnQ7Ym9yZGVyOjFweCBzb2xpZCAjZThlMGQ1IWltcG9ydGFudDtib3JkZXItcmFkaXVzOjIycHghaW1wb3J0YW50OwogIG92ZXJmbG93OmhpZGRlbiFpbXBvcnRhbnQ7Cn0KLmdhbWUtY29udHJvbHN7bWFyZ2luLXRvcDoxMnB4IWltcG9ydGFudDtnYXA6OXB4IWltcG9ydGFudH0KLmdhbWUtY29udHJvbHMgLmNvbnRyb2wtbWFpbiwKLnN0YWdlLnRoZW1lLWxhZGRlciAuY29udHJvbC1tYWluLC5zdGFnZS50aGVtZS13aGVlbCAuY29udHJvbC1tYWluLC5zdGFnZS50aGVtZS1sb3QgLmNvbnRyb2wtbWFpbiwKLnN0YWdlLnRoZW1lLXBpbmJhbGwgLmNvbnRyb2wtbWFpbiwuc3RhZ2UudGhlbWUtcmFjZSAuY29udHJvbC1tYWluLC5zdGFnZS50aGVtZS1jYXBzdWxlIC5jb250cm9sLW1haW4sCi5zdGFnZS50aGVtZS1zbG90IC5jb250cm9sLW1haW4sLnN0YWdlLnRoZW1lLWJvbWIgLmNvbnRyb2wtbWFpbnsKICBiYWNrZ3JvdW5kOiMyNDIxMWQhaW1wb3J0YW50O2NvbG9yOiNmZmYhaW1wb3J0YW50O2JvcmRlcjoxcHggc29saWQgIzI0MjExZCFpbXBvcnRhbnQ7CiAgYm94LXNoYWRvdzowIDhweCAxOHB4IHJnYmEoMzYsMzMsMjksLjEyKSFpbXBvcnRhbnQ7Cn0KLmdhbWUtY29udHJvbHMgLmNvbnRyb2wtYWx0LAouc3RhZ2UudGhlbWUtbGFkZGVyIC5jb250cm9sLWFsdCwuc3RhZ2UudGhlbWUtd2hlZWwgLmNvbnRyb2wtYWx0LC5zdGFnZS50aGVtZS1sb3QgLmNvbnRyb2wtYWx0LAouc3RhZ2UudGhlbWUtcGluYmFsbCAuY29udHJvbC1hbHQsLnN0YWdlLnRoZW1lLXJhY2UgLmNvbnRyb2wtYWx0LC5zdGFnZS50aGVtZS1jYXBzdWxlIC5jb250cm9sLWFsdCwKLnN0YWdlLnRoZW1lLXNsb3QgLmNvbnRyb2wtYWx0LC5zdGFnZS50aGVtZS1ib21iIC5jb250cm9sLWFsdHsKICBiYWNrZ3JvdW5kOiNmZmZkZjghaW1wb3J0YW50O2NvbG9yOiM0YjQxMzchaW1wb3J0YW50O2JvcmRlcjoxcHggc29saWQgI2RlZDVjOCFpbXBvcnRhbnQ7Ym94LXNoYWRvdzpub25lIWltcG9ydGFudDsKfQouaGludCwuc3RhZ2VbY2xhc3MqPSJ0aGVtZS0iXSAuaGludHttYXJnaW46OXB4IDRweCAwIWltcG9ydGFudDtjb2xvcjojOGQ4MTc0IWltcG9ydGFudDtmb250LXNpemU6MTFweCFpbXBvcnRhbnQ7Zm9udC13ZWlnaHQ6NzUwIWltcG9ydGFudH0KLmFsbC1yZXN1bHRzLXJvd3ttYXJnaW4tdG9wOjEwcHghaW1wb3J0YW50fQouYWxsLXJlc3VsdHMtYnRue21pbi1oZWlnaHQ6NDJweCFpbXBvcnRhbnQ7cGFkZGluZzoxMHB4IDE1cHghaW1wb3J0YW50O2JhY2tncm91bmQ6dHJhbnNwYXJlbnQhaW1wb3J0YW50O2JvcmRlcjoxcHggc29saWQgI2RlZDVjOCFpbXBvcnRhbnQ7Y29sb3I6IzY1NWE0ZiFpbXBvcnRhbnQ7Ym94LXNoYWRvdzpub25lIWltcG9ydGFudH0KLnJlbWFpbmluZy1jYW5kaWRhdGVze21hcmdpbjoxMnB4IDAgMCFpbXBvcnRhbnQ7YmFja2dyb3VuZDojZmFmN2YxIWltcG9ydGFudDtib3JkZXItY29sb3I6I2U1ZGRkMSFpbXBvcnRhbnQ7Ym94LXNoYWRvdzpub25lIWltcG9ydGFudH0KLnJlc3VsdC1ibG9ja3tib3JkZXI6MCFpbXBvcnRhbnQ7bWFyZ2luLXRvcDoxNHB4IWltcG9ydGFudDtwYWRkaW5nOjE2cHghaW1wb3J0YW50O2JhY2tncm91bmQ6I2Y3ZjNlYyFpbXBvcnRhbnQ7Ym9yZGVyLXJhZGl1czoyMnB4IWltcG9ydGFudH0KLnJlc3VsdC1raWNrZXJ7bWFyZ2luLWJvdHRvbToxMnB4IWltcG9ydGFudDtjb2xvcjojNzg2ZDYxIWltcG9ydGFudDtmb250LXNpemU6MTJweCFpbXBvcnRhbnQ7Zm9udC13ZWlnaHQ6OTAwIWltcG9ydGFudH0KLnJlc3VsdC1ibG9jayAud2lubmVyc3ttYXJnaW4tYm90dG9tOjE1cHghaW1wb3J0YW50fQoucmVzdWx0LWJsb2NrIC53aW5uZXJ7Y29sb3I6IzIxMWQxOCFpbXBvcnRhbnR9Ci5zdGFnZSAucmVzdWx0LW91dGNvbWV7YmFja2dyb3VuZDojZTllMGQ0IWltcG9ydGFudDtjb2xvcjojMmEyNDFlIWltcG9ydGFudDtib3gtc2hhZG93Om5vbmUhaW1wb3J0YW50fQouYWN0aW9uc3tnYXA6OXB4IWltcG9ydGFudH0KLmFjdGlvbnMgLmFnYWlue2JhY2tncm91bmQ6I2ZmZmRmOCFpbXBvcnRhbnQ7Ym9yZGVyOjFweCBzb2xpZCAjZGVkNWM4IWltcG9ydGFudDtjb2xvcjojNDkzZjM1IWltcG9ydGFudDtib3gtc2hhZG93Om5vbmUhaW1wb3J0YW50fQouYWN0aW9ucyAuZXhjbHVkZXtiYWNrZ3JvdW5kOiMyNDIxMWQhaW1wb3J0YW50O2JvcmRlcjoxcHggc29saWQgIzI0MjExZCFpbXBvcnRhbnQ7Y29sb3I6I2ZmZiFpbXBvcnRhbnQ7Ym94LXNoYWRvdzowIDhweCAxOHB4IHJnYmEoMzYsMzMsMjksLjEwKSFpbXBvcnRhbnR9Ci5yb3VuZC1yZXN1bHQsLnJhY2UtcmVzdWx0LC5jYXBzdWxlLXJlc3VsdCwuc2xvdC1yZXN1bHQsLmJvbWItcmVzdWx0LC5waW5iYWxsLXJlc3VsdCwubGFkZGVyLW1lc3NhZ2V7Y29sb3I6IzJjMjUxZiFpbXBvcnRhbnR9CkBtZWRpYShtYXgtd2lkdGg6NTAwcHgpewogICNudW1iZXJNb2RlIC5yZXN1bHQtbm90ZXttYXJnaW4tYm90dG9tOjE0cHghaW1wb3J0YW50fQogIC5zdGFnZSwuc3RhZ2VbY2xhc3MqPSJ0aGVtZS0iXXtwYWRkaW5nOjEwcHghaW1wb3J0YW50O2JvcmRlci1yYWRpdXM6MjJweCFpbXBvcnRhbnR9CiAgLnN0YWdlLWhlYWR7bWFyZ2luLWJvdHRvbTo5cHghaW1wb3J0YW50O3BhZGRpbmc6MXB4IDJweCAwIWltcG9ydGFudH0KICAudmlzdWFse21pbi1oZWlnaHQ6MjQ4cHghaW1wb3J0YW50O3BhZGRpbmc6OXB4IWltcG9ydGFudDtib3JkZXItcmFkaXVzOjE3cHghaW1wb3J0YW50fQogIC5yZXN1bHQtYmxvY2t7cGFkZGluZzoxM3B4IWltcG9ydGFudDtib3JkZXItcmFkaXVzOjE3cHghaW1wb3J0YW50fQogIC5hY3Rpb25ze2dyaWQtdGVtcGxhdGUtY29sdW1uczoxZnIhaW1wb3J0YW50fQp9Cg=='
           if marker not in text:
-              css = r'''
-
-/* v51 unified draw stage shell */
-#numberMode .result-note{margin-top:8px!important;margin-bottom:16px!important}
-.stage,
-.stage.theme-ladder,.stage.theme-wheel,.stage.theme-lot,.stage.theme-pinball,
-.stage.theme-race,.stage.theme-capsule,.stage.theme-slot,.stage.theme-bomb{
-  background:#fffdf8!important;
-  color:#29231d!important;
-  border:1px solid rgba(226,219,208,.96)!important;
-  border-radius:30px!important;
-  padding:14px!important;
-  box-shadow:0 16px 44px rgba(48,40,29,.09)!important;
-}
-.stage::before,.stage.theme-ladder::before,.stage.theme-wheel::before,.stage.theme-lot::before,
-.stage.theme-pinball::before,.stage.theme-race::before,.stage.theme-capsule::before,
-.stage.theme-slot::before,.stage.theme-bomb::before{display:none!important}
-.stage-head{margin:0 2px 12px!important;padding:2px 2px 0!important;min-height:28px}
-.stage-head strong,
-.stage.theme-ladder .stage-head strong,.stage.theme-wheel .stage-head strong,.stage.theme-lot .stage-head strong,
-.stage.theme-pinball .stage-head strong,.stage.theme-race .stage-head strong,.stage.theme-capsule .stage-head strong,
-.stage.theme-slot .stage-head strong,.stage.theme-bomb .stage-head strong{
-  max-width:none!important;background:transparent!important;border:0!important;padding:0!important;
-  color:#29231d!important;font-size:14px!important;font-weight:950!important;letter-spacing:-.2px!important;
-}
-.stage-status,.stage[class*="theme-"] .stage-status{color:#94887a!important;font-size:12px!important;font-weight:850!important}
-.visual{
-  width:100%!important;min-height:300px!important;padding:14px!important;
-  background:#f7f3ec!important;border:1px solid #e8e0d5!important;border-radius:22px!important;
-  overflow:hidden!important;
-}
-.game-controls{margin-top:12px!important;gap:9px!important}
-.game-controls .control-main,
-.stage.theme-ladder .control-main,.stage.theme-wheel .control-main,.stage.theme-lot .control-main,
-.stage.theme-pinball .control-main,.stage.theme-race .control-main,.stage.theme-capsule .control-main,
-.stage.theme-slot .control-main,.stage.theme-bomb .control-main{
-  background:#24211d!important;color:#fff!important;border:1px solid #24211d!important;
-  box-shadow:0 8px 18px rgba(36,33,29,.12)!important;
-}
-.game-controls .control-alt,
-.stage.theme-ladder .control-alt,.stage.theme-wheel .control-alt,.stage.theme-lot .control-alt,
-.stage.theme-pinball .control-alt,.stage.theme-race .control-alt,.stage.theme-capsule .control-alt,
-.stage.theme-slot .control-alt,.stage.theme-bomb .control-alt{
-  background:#fffdf8!important;color:#4b4137!important;border:1px solid #ded5c8!important;box-shadow:none!important;
-}
-.hint,.stage[class*="theme-"] .hint{margin:9px 4px 0!important;color:#8d8174!important;font-size:11px!important;font-weight:750!important}
-.all-results-row{margin-top:10px!important}
-.all-results-btn{min-height:42px!important;padding:10px 15px!important;background:transparent!important;border:1px solid #ded5c8!important;color:#655a4f!important;box-shadow:none!important}
-.remaining-candidates{margin:12px 0 0!important;background:#faf7f1!important;border-color:#e5ddd1!important;box-shadow:none!important}
-.result-block{border:0!important;margin-top:14px!important;padding:16px!important;background:#f7f3ec!important;border-radius:22px!important}
-.result-kicker{margin-bottom:12px!important;color:#786d61!important;font-size:12px!important;font-weight:900!important}
-.result-block .winners{margin-bottom:15px!important}
-.result-block .winner{color:#211d18!important}
-.stage .result-outcome{background:#e9e0d4!important;color:#2a241e!important;box-shadow:none!important}
-.actions{gap:9px!important}
-.actions .again{background:#fffdf8!important;border:1px solid #ded5c8!important;color:#493f35!important;box-shadow:none!important}
-.actions .exclude{background:#24211d!important;border:1px solid #24211d!important;color:#fff!important;box-shadow:0 8px 18px rgba(36,33,29,.10)!important}
-.round-result,.race-result,.capsule-result,.slot-result,.bomb-result,.pinball-result,.ladder-message{color:#2c251f!important}
-@media(max-width:500px){
-  #numberMode .result-note{margin-bottom:14px!important}
-  .stage,.stage[class*="theme-"]{padding:10px!important;border-radius:22px!important}
-  .stage-head{margin-bottom:9px!important;padding:1px 2px 0!important}
-  .visual{min-height:248px!important;padding:9px!important;border-radius:17px!important}
-  .result-block{padding:13px!important;border-radius:17px!important}
-  .actions{grid-template-columns:1fr!important}
-}
-'''
+              css = base64.b64decode(css_b64).decode('utf-8')
               if '</style>' not in text:
                   raise SystemExit('style closing tag not found')
               text = text.replace('</style>', css + '\n</style>', 1)
