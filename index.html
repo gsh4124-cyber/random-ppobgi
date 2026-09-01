@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <meta name="theme-color" content="#f4f0e8" />
 <title>랜덤뽑기 | 결과는 랜덤, 방식은 마음대로.</title>
-<meta name="description" content="번호나 이름을 사다리, 룰렛, 제비, 핀볼, 경주, 캡슐, 슬롯, 폭탄으로 재미있게 뽑아보세요." />
+<meta name="description" content="번호·이름 뽑기 8종과 주사위, 윷놀이, 동전, 순서 정하기, 팀 나누기를 무료로 이용하세요." />
 <link rel="canonical" href="https://random-ppobgi.pages.dev/" />
 <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />
@@ -25,7 +25,7 @@
 <meta name="twitter:image" content="https://random-ppobgi.pages.dev/og-image.png" />
 <meta name="twitter:image:alt" content="랜덤뽑기 — 결과는 랜덤, 방식은 마음대로." />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"랜덤뽑기","url":"https://random-ppobgi.pages.dev/","description":"번호나 이름을 8가지 방식으로 무작위 선택하는 무료 웹 도구","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":"ko-KR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"랜덤뽑기","url":"https://random-ppobgi.pages.dev/","description":"무작위 뽑기 8종과 주사위, 윷놀이, 동전, 순서 정하기, 팀 나누기를 제공하는 무료 웹 도구","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":"ko-KR","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}
 </script>
 <style>
 :root{--bg:#f4f0e8;--card:#fffdf8;--soft:#eee8dd;--soft2:#f8f5ef;--text:#1f1c18;--muted:#8a8175;--line:#e4ddd1;--dark:#24211d;--accent:#c59b62;--accent-soft:#efe2d0;--white:#fff;--radius:28px;--shadow:0 16px 44px rgba(48,40,29,.08)}.hidden{display:none!important}
@@ -908,6 +908,20 @@
   .capsule-ball{width:36px!important;height:36px!important}
 }
 
+
+/* v56 game helpers */
+.tool-card{margin-top:18px;padding:24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:var(--shadow)}
+.tool-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}.tool-head h2{margin:0;font-size:23px;letter-spacing:-.04em}.tool-head p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.tool-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.tool-tab{min-width:0;padding:11px 4px;border:1px solid var(--line);border-radius:15px;background:var(--soft2);font-weight:800;font-size:12px}.tool-tab span{display:block;font-size:23px;margin-bottom:3px}.tool-tab.active{color:#fff;background:var(--dark);border-color:var(--dark);transform:translateY(-1px)}
+.tool-panel{margin-top:16px;padding:20px;border-radius:20px;background:var(--soft2);text-align:center}.tool-panel[hidden]{display:none}.tool-panel h3{margin:0 0 6px;font-size:19px}.tool-desc{margin:0 0 15px;color:var(--muted);font-size:13px}
+.tool-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px}.tool-controls label{font-size:13px;font-weight:750}.tool-controls select,.tool-controls input{height:42px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.tool-run{min-height:44px;padding:0 20px;border:0;border-radius:14px;background:var(--dark);color:#fff;font-weight:850}.tool-run:active{transform:scale(.97)}
+.tool-result{min-height:86px;margin-top:15px;padding:16px;border:1px solid var(--line);border-radius:17px;background:#fff;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-weight:850}
+.die{width:58px;height:58px;display:grid;place-items:center;border-radius:14px;background:#fff;border:2px solid var(--dark);box-shadow:0 5px 0 #d8d0c4;font-size:31px}.rolling .die,.rolling .yut-stick,.rolling .coin-face{animation:toolShake .12s linear infinite alternate}
+.tool-total{width:100%;color:var(--muted);font-size:13px}.yut-stick{width:38px;height:78px;border-radius:20px;background:linear-gradient(90deg,#d7a86e,#f2d39c 50%,#bd844a);box-shadow:inset -4px 0 5px rgba(80,45,15,.18)}.yut-stick.back{background:#8a5b32}.yut-name{width:100%;font-size:30px}.coin-face{width:86px;height:86px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#f3d789,#b9862f);border:4px double #7f5a1f;color:#5d3e12;font-size:20px;box-shadow:0 7px 0 #9a702d}
+.tool-textarea{width:100%;min-height:90px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;resize:vertical;line-height:1.55}.order-list,.team-grid{width:100%;display:grid;gap:8px;text-align:left}.order-item{padding:10px 12px;border-radius:11px;background:var(--soft2)}.order-item b{display:inline-grid;place-items:center;width:26px;height:26px;margin-right:8px;border-radius:50%;background:var(--dark);color:#fff;font-size:12px}.team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.team-box{padding:12px;border-radius:13px;background:var(--soft2)}.team-box strong{display:block;margin-bottom:6px}.team-box div{font-size:14px;line-height:1.6}
+@keyframes toolShake{from{transform:rotate(-5deg) scale(.97)}to{transform:rotate(5deg) scale(1.03)}}
+@media(max-width:540px){.tool-card{padding:18px 14px}.tool-tabs{grid-template-columns:repeat(5,1fr);gap:4px}.tool-tab{padding:9px 1px;font-size:10px}.tool-tab span{font-size:20px}.tool-panel{padding:17px 12px}.team-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -929,6 +943,22 @@
 </div></section>
 <section class="stage" id="stage" aria-live="polite"><div class="stage-head"><strong id="stageTitle">LADDER</strong><span class="stage-status" id="stageStatus"></span></div><div class="visual" id="visual"></div><div id="interactiveControls"></div><div class="hint" id="hint"></div><div class="remaining-candidates hidden" id="remainingCandidates" aria-live="polite"><div class="remaining-head"><span>현재 남은 후보</span><strong id="remainingCount"></strong></div><div class="remaining-list" id="remainingList"></div></div><div class="all-results-row"><button class="all-results-btn" id="showAllBtn" type="button">바로 결과 보기</button></div><div class="result-block" id="resultBlock"><div class="result-kicker" id="resultKicker">뽑기 결과</div><ol class="winners" id="winners"></ol><div class="actions"><button class="again" id="repickBtn" type="button">전체에서 다시 뽑기</button><button class="exclude" id="excludeBtn" type="button">당첨자 제외하고 다시 뽑기</button></div></div></section>
 <div class="ad-slot" id="ad-after-result" aria-hidden="true"></div>
+
+<section class="tool-card" id="gameTools" aria-labelledby="gameToolsTitle">
+  <div class="tool-head"><div><h2 id="gameToolsTitle">게임 도구</h2><p>모임과 보드게임에 바로 써보세요.</p></div></div>
+  <div class="tool-tabs" role="tablist" aria-label="게임 도구 선택">
+    <button class="tool-tab active" type="button" role="tab" aria-selected="true" data-tool="dice"><span>🎲</span>주사위</button>
+    <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="yut"><span>🪵</span>윷놀이</button>
+    <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="coin"><span>🪙</span>동전</button>
+    <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="order"><span>🔢</span>순서</button>
+    <button class="tool-tab" type="button" role="tab" aria-selected="false" data-tool="team"><span>👥</span>팀 나누기</button>
+  </div>
+  <div class="tool-panel" data-panel="dice"><h3>주사위 굴리기</h3><p class="tool-desc">최대 6개까지 한 번에 굴릴 수 있어요.</p><div class="tool-controls"><label for="diceCount">개수</label><select id="diceCount"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select><button class="tool-run" id="rollDice" type="button">굴리기</button></div><div class="tool-result" id="diceResult" aria-live="polite">🎲 굴려보세요</div></div>
+  <div class="tool-panel" data-panel="yut" hidden><h3>윷 던지기</h3><p class="tool-desc">네 개의 윷가락을 던져 도·개·걸·윷·모를 정해요.</p><button class="tool-run" id="throwYut" type="button">윷 던지기</button><div class="tool-result" id="yutResult" aria-live="polite">🪵 던져보세요</div></div>
+  <div class="tool-panel" data-panel="coin" hidden><h3>동전 던지기</h3><p class="tool-desc">앞면과 뒷면 중 하나를 무작위로 정해요.</p><button class="tool-run" id="flipCoin" type="button">동전 던지기</button><div class="tool-result" id="coinResult" aria-live="polite"><div class="coin-face">?</div></div></div>
+  <div class="tool-panel" data-panel="order" hidden><h3>순서 정하기</h3><p class="tool-desc">이름을 줄바꿈이나 쉼표로 구분하세요. 비워두면 1~8번으로 정해요.</p><textarea class="tool-textarea" id="orderNames" placeholder="참가자 이름을 입력하세요"></textarea><div class="tool-controls" style="margin-top:10px"><button class="tool-run" id="makeOrder" type="button">순서 섞기</button></div><div class="tool-result" id="orderResult" aria-live="polite">순서를 정해보세요</div></div>
+  <div class="tool-panel" data-panel="team" hidden><h3>팀 나누기</h3><p class="tool-desc">참가자를 고르게 섞어 원하는 수의 팀으로 나눠요.</p><textarea class="tool-textarea" id="teamNames" placeholder="참가자 이름을 입력하세요"></textarea><div class="tool-controls" style="margin-top:10px"><label for="teamCount">팀 수</label><select id="teamCount"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select><button class="tool-run" id="makeTeams" type="button">팀 나누기</button></div><div class="tool-result" id="teamResult" aria-live="polite">팀을 나눠보세요</div></div>
+</section>
 <section class="service-info" aria-labelledby="serviceInfoTitle">
   <h2 id="serviceInfoTitle">바로 쓰는 랜덤 선택 도구</h2>
   <p>랜덤뽑기는 모임, 수업, 게임, 순서 정하기, 당첨자 선정처럼 선택이 필요한 순간에 번호나 이름을 무작위로 뽑는 무료 웹 도구입니다. 회원가입 없이 8가지 방식 중 하나를 골라 바로 시작할 수 있습니다.</p>
@@ -1271,6 +1301,21 @@ document.querySelectorAll('[data-target]').forEach(btn=>btn.addEventListener('cl
   document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b===soundButton){if(enabled())play('on',true);return}if(b.matches('.ladder-pick,[data-action="launch"],#raceStart,#bombStart'))effect('start');else if(b.matches('.paper-lot'))effect('drop');else if(b.matches('#wheelStart,#capsuleStart,#slotStart'))effect('spin');else if(b.matches('#slotStop'))effect('tick')});
   const observer=new MutationObserver(records=>{for(const r of records){const el=r.target;if(el.id==='bombCore'&&el.classList.contains('explode'))effect('bomb');if(el.id==='resultBlock'&&el.classList.contains('show'))effect('win');if(el.classList?.contains('reel-stop'))effect('tick')}});
   observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
+})();
+</script>
+
+<script>
+(() => {
+  const root=document.getElementById('gameTools'); if(!root)return;
+  const rand=n=>{if(n<=0)return 0;const max=Math.floor(4294967296/n)*n,a=new Uint32Array(1);do{crypto.getRandomValues(a)}while(a[0]>=max);return a[0]%n};
+  const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+  const namesOf=id=>{const a=document.getElementById(id).value.split(/[\n,]+/).map(v=>v.trim()).filter(Boolean);return a.length?a:Array.from({length:8},(_,i)=>String(i+1)+'번')};
+  root.querySelectorAll('.tool-tab').forEach(btn=>btn.addEventListener('click',()=>{root.querySelectorAll('.tool-tab').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-selected',on)});root.querySelectorAll('.tool-panel').forEach(p=>p.hidden=p.dataset.panel!==btn.dataset.tool)}));
+  document.getElementById('rollDice').addEventListener('click',()=>{const n=+document.getElementById('diceCount').value,out=document.getElementById('diceResult');out.classList.add('rolling');let k=0,t=setInterval(()=>{const v=Array.from({length:n},()=>rand(6)+1);out.innerHTML=v.map(x=>'<span class="die">'+x+'</span>').join('')},70);setTimeout(()=>{clearInterval(t);const v=Array.from({length:n},()=>rand(6)+1);out.classList.remove('rolling');out.innerHTML=v.map(x=>'<span class="die">'+x+'</span>').join('')+(n>1?'<div class="tool-total">합계 '+v.reduce((a,b)=>a+b,0)+'</div>':'')},560)});
+  document.getElementById('throwYut').addEventListener('click',()=>{const out=document.getElementById('yutResult');out.classList.add('rolling');out.innerHTML='<i class="yut-stick"></i>'.repeat(4);setTimeout(()=>{const backs=Array.from({length:4},()=>rand(2));const flat=backs.reduce((a,b)=>a+b,0),name=['모','도','개','걸','윷'][flat];out.classList.remove('rolling');out.innerHTML=backs.map(v=>'<i class="yut-stick '+(v?'back':'')+'"></i>').join('')+'<strong class="yut-name">'+name+'</strong>'},620)});
+  document.getElementById('flipCoin').addEventListener('click',()=>{const out=document.getElementById('coinResult');out.classList.add('rolling');let t=setInterval(()=>out.innerHTML='<div class="coin-face">'+(rand(2)?'앞면':'뒷면')+'</div>',70);setTimeout(()=>{clearInterval(t);out.classList.remove('rolling');out.innerHTML='<div class="coin-face">'+(rand(2)?'앞면':'뒷면')+'</div>'},560)});
+  document.getElementById('makeOrder').addEventListener('click',()=>{const a=shuffle(namesOf('orderNames'));document.getElementById('orderResult').innerHTML='<div class="order-list">'+a.map((v,i)=>'<div class="order-item"><b>'+(i+1)+'</b>'+v.replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]))+'</div>').join('')+'</div>'});
+  document.getElementById('makeTeams').addEventListener('click',()=>{const a=shuffle(namesOf('teamNames')),n=Math.min(+document.getElementById('teamCount').value,a.length),teams=Array.from({length:n},()=>[]);a.forEach((v,i)=>teams[i%n].push(v));const esc=v=>v.replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));document.getElementById('teamResult').innerHTML='<div class="team-grid">'+teams.map((t,i)=>'<div class="team-box"><strong>'+(i+1)+'팀</strong><div>'+t.map(esc).join('<br>')+'</div></div>').join('')+'</div>'});
 })();
 </script>
 </body></html>
