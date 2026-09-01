@@ -1,40 +1,51 @@
-# PROJECT STATUS — 랜덤뽑기
+# PROJECT STATUS — random-ppobgi
 
-- 마지막 갱신: 2026-08-31
-- 저장소 역할: 실제 랜덤뽑기 웹서비스 코드·배포 원본
-- 운영 소속: 황제 Vault `자동 사업운영/바이브코딩/랜덤뽑기/`
-- ChatGPT 표면: `자동 사업운영`
+- 마지막 갱신: 2026-09-01
+- 저장소 역할: 랜덤뽑기 웹서비스의 코드·배포·기술상태 원본
+- 상위 영역: 황제 Vault `자동 사업운영/바이브코딩/랜덤뽑기/`
+- ChatGPT 통합 관제: `자동 사업운영`
+- ChatGPT 실행창: `랜덤뽑기 Work`
+- 표준 로컬 경로: `C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/랜덤뽑기/random-ppobgi`
 
-## 현재 구현 상태
+## 현재 상태
 
-- v50 운영 배포 상태
+**v50 운영 배포 / Production D1 익명 행동계측 활성화 / Vault 일일 aggregate snapshot 경로 복구**
+
 - 운영 주소: https://random-ppobgi.pages.dev/
-- 8개 게임: 사다리 / 룰렛 / 제비 / 핀볼 / 경주 / 캡슐 / 슬롯 / 폭탄
 - Cloudflare Pages 배포
+- 8개 게임: 사다리 / 룰렛 / 제비 / 핀볼 / 경주 / 캡슐 / 슬롯 / 폭탄
 - Production D1 익명 핵심행동 계측 활성화
-- D1 → `hwangje-vault` 일일 aggregate snapshot bridge 검증 완료
+- Google Search Console 등록·소유권 확인 완료
 
-## 최근 완료
+## 운영 데이터
 
-- 익명 행동계측 Production 동작 확인
-- D1 aggregate snapshot을 황제 Vault로 전달하는 자동 경로 작동 확인
-- 운영·판단 Canonical을 바이브코딩 산하 `랜덤뽑기` 경로로 정리
+- 핵심 이벤트: `game_start`, `game_complete`, `reroll`, `exclude_reroll`
+- Production D1: `random-ppobgi-analytics`
+- Vault snapshot: `자동 사업운영/바이브코딩/랜덤뽑기/analytics_latest.json`
+- workflow: `hwangje-vault/.github/workflows/random-picker-analytics-snapshot.yml`
+- workflow 기준 매일 00:20 KST에 최근 14일 aggregate를 갱신하도록 복구됨
+- 이름·당첨내용·입력문구·사용자 ID·세션 ID·광고 ID·쿠키는 수집하지 않음
+- 최초 검증 snapshot은 `game_start 8 / game_complete 6`으로 표본이 작아 제품 성과로 해석하지 않음
 
-## 현재 병목·미확인
+## 현재 병목
 
 - 외부 사용 표본이 아직 작아 제품 개선·확대 판단 근거가 부족함
 - QA·본인 테스트와 실제 외부 사용을 현재 집계만으로 완전히 분리하지 않음
-- 코드 자체의 긴급 기술 장애는 현재 확인되지 않음
+- sitemap 재처리 성공 여부는 다음 검색 점검에서 재확인 필요
+- 복구된 snapshot workflow의 다음 실제 실행 성공 여부는 첫 실행 뒤 확인 필요
 
-## 다음 기술 행동
+## 운영 원칙
 
-- 현 운영본과 계측을 유지
-- 의미 있는 외부 표본이 쌓이기 전 근거 없는 기능 추가를 하지 않음
-- 실제 기술 수정·배포가 발생하면 이 파일을 함께 갱신
+- 기존 8개 게임의 결과 로직·애니메이션·효과음·모바일 경험을 근거 없이 임의 변경하지 않음
+- 사용자 입력 내용을 분석 서버로 보내지 않음
+- 실제 표본이 쌓이기 전 기능 추가를 성급하게 확정하지 않음
+- 비용·광고·대규모 기능변경·수익화 방식 변경은 황제 Gate
+- 주간 유지보수와 월간 비교개선은 황제 상황실의 통합 정기점검에서 관리
 
-## 관련 Vault Canonical
+## 다음 행동
 
-- `자동 사업운영/바이브코딩/랜덤뽑기/_INDEX.md`
-- `자동 사업운영/바이브코딩/랜덤뽑기/AI_운영_폐쇄루프_1차실험.md`
-
-> 이 파일은 코드 전체를 다시 읽지 않고 현재 기술 진행 위치를 회수하기 위한 인계파일이다. 사업 판단의 최종 Canonical은 황제 Vault에 둔다.
+1. 현 운영본과 D1 익명 계측 유지
+2. 복구된 snapshot workflow의 다음 실행 결과 확인
+3. 충분한 외부 표본이 생기면 게임별 시작·완료·재추첨 사용 비교
+4. 다음 Search Console 점검에서 sitemap 처리 성공 여부 확인
+5. 의미 있는 구현·QA·배포 변화가 생기면 이 파일 갱신
