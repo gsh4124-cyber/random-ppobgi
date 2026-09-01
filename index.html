@@ -876,6 +876,23 @@
   .capsule-tray{width:158px!important}
 }
 
+
+/* v53 opened capsule shell correction */
+.capsule-tray>div{width:140px!important;height:42px!important}
+.capsule-half{
+  top:-1px!important;width:36px!important;height:40px!important;
+  border-radius:50% 18% 18% 50% / 50% 32% 32% 50%!important;
+}
+.capsule-half.left{left:15px!important;transform:translateX(-3px) rotate(-12deg)!important}
+.capsule-half.right{
+  right:15px!important;
+  border-radius:18% 50% 50% 18% / 32% 50% 50% 32%!important;
+  transform:translateX(3px) rotate(12deg)!important;
+}
+@keyframes halfLeft{from{transform:translateX(34px) rotate(0)}to{transform:translateX(-3px) rotate(-12deg)}}
+@keyframes halfRight{from{transform:translateX(-34px) rotate(0)}to{transform:translateX(3px) rotate(12deg)}}
+.capsule-paper{top:10px!important}
+
 </style>
 </head>
 <body>
