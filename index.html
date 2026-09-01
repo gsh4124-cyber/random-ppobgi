@@ -922,13 +922,23 @@
 .tool-textarea{width:100%;min-height:90px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;resize:vertical;line-height:1.55}.order-list,.team-grid{width:100%;display:grid;gap:8px;text-align:left}.order-item{padding:10px 12px;border-radius:11px;background:var(--soft2)}.order-item b{display:inline-grid;place-items:center;width:26px;height:26px;margin-right:8px;border-radius:50%;background:var(--dark);color:#fff;font-size:12px}.team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.team-box{padding:12px;border-radius:13px;background:var(--soft2)}.team-box strong{display:block;margin-bottom:6px}.team-box div{font-size:14px;line-height:1.6}
 @keyframes toolShake{from{transform:rotate(-5deg) scale(.97)}to{transform:rotate(5deg) scale(1.03)}}
 @media(max-width:540px){.tool-card{padding:18px 14px}.tool-tabs{grid-template-columns:repeat(5,1fr);gap:4px}.tool-tab{padding:9px 1px;font-size:10px}.tool-tab span{font-size:20px}.tool-panel{padding:17px 12px}.team-grid{grid-template-columns:1fr}}
+
+/* v57 primary section switch */
+.section-switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0 0 14px;padding:5px;border:1px solid var(--line);border-radius:18px;background:rgba(255,253,248,.78);box-shadow:0 8px 26px rgba(48,40,29,.05);position:sticky;top:8px;z-index:20;backdrop-filter:blur(12px)}
+.section-switch button{height:47px;border:0;border-radius:13px;background:transparent;color:var(--muted);font-weight:850;font-size:15px}.section-switch button.active{background:var(--dark);color:#fff;box-shadow:0 5px 14px rgba(36,33,29,.18)}
+#pickerArea[hidden],#gameTools[hidden]{display:none!important}#gameTools{margin-top:0}
 </style>
 </head>
 <body>
 <main class="wrap">
 <header><div class="logo">랜덤 <span>뽑기</span></div><div class="header-actions"><button class="sound-toggle" id="soundToggle" type="button" aria-pressed="false" aria-label="효과음 켜기" title="효과음 켜기">🔇</button><button class="reset" id="resetBtn" type="button">초기화</button></div></header>
 <div class="hero"><h1>오늘은<br>어떻게 뽑을까?</h1><p>결과는 랜덤, 방식은 마음대로.</p></div>
-<section class="card" id="mainCard">
+
+<nav class="section-switch" aria-label="서비스 종류">
+  <button id="showPicker" class="active" type="button" aria-pressed="true">🎯 뽑기 게임</button>
+  <button id="showTools" type="button" aria-pressed="false">🎲 게임 도구</button>
+</nav>
+<div id="pickerArea"><section class="card" id="mainCard">
 <div class="method-top"><p class="method-label">뽑기 방식</p><div class="methods" role="radiogroup" aria-label="뽑기 방식 선택"><button class="method active" data-method="ladder" type="button" role="radio" aria-checked="true" tabindex="0"><span class="icon">🪜</span><span class="name">사다리</span></button><button class="method" data-method="wheel" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="icon">◉</span><span class="name">룰렛</span></button><button class="method" data-method="lot" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="icon">🎟</span><span class="name">제비</span></button><button class="method" data-method="pinball" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="icon">🕹</span><span class="name">핀볼</span></button><button class="method" data-method="race" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="icon">🏁</span><span class="name">경주</span></button><button class="method" data-method="capsule" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="icon">🔮</span><span class="name">캡슐</span></button><button class="method" data-method="slot" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="icon">🎰</span><span class="name">슬롯</span></button><button class="method" data-method="bomb" type="button" role="radio" aria-checked="false" tabindex="-1"><span class="icon">💣</span><span class="name">폭탄</span></button></div>
 </div>
 <div class="tabs" id="inputTabs" role="tablist" aria-label="입력 방식"><button class="tab active" id="numberTab" type="button" role="tab" aria-selected="true" aria-controls="numberMode">번호</button><button class="tab" id="nameTab" type="button" role="tab" aria-selected="false" aria-controls="nameMode">이름</button></div>
@@ -944,7 +954,8 @@
 <section class="stage" id="stage" aria-live="polite"><div class="stage-head"><strong id="stageTitle">LADDER</strong><span class="stage-status" id="stageStatus"></span></div><div class="visual" id="visual"></div><div id="interactiveControls"></div><div class="hint" id="hint"></div><div class="remaining-candidates hidden" id="remainingCandidates" aria-live="polite"><div class="remaining-head"><span>현재 남은 후보</span><strong id="remainingCount"></strong></div><div class="remaining-list" id="remainingList"></div></div><div class="all-results-row"><button class="all-results-btn" id="showAllBtn" type="button">바로 결과 보기</button></div><div class="result-block" id="resultBlock"><div class="result-kicker" id="resultKicker">뽑기 결과</div><ol class="winners" id="winners"></ol><div class="actions"><button class="again" id="repickBtn" type="button">전체에서 다시 뽑기</button><button class="exclude" id="excludeBtn" type="button">당첨자 제외하고 다시 뽑기</button></div></div></section>
 <div class="ad-slot" id="ad-after-result" aria-hidden="true"></div>
 
-<section class="tool-card" id="gameTools" aria-labelledby="gameToolsTitle">
+</div><!-- /pickerArea -->
+<section class="tool-card" id="gameTools" hidden aria-labelledby="gameToolsTitle">
   <div class="tool-head"><div><h2 id="gameToolsTitle">게임 도구</h2><p>모임과 보드게임에 바로 써보세요.</p></div></div>
   <div class="tool-tabs" role="tablist" aria-label="게임 도구 선택">
     <button class="tool-tab active" type="button" role="tab" aria-selected="true" data-tool="dice"><span>🎲</span>주사위</button>
@@ -1316,6 +1327,21 @@ document.querySelectorAll('[data-target]').forEach(btn=>btn.addEventListener('cl
   document.getElementById('flipCoin').addEventListener('click',()=>{const out=document.getElementById('coinResult');out.classList.add('rolling');let t=setInterval(()=>out.innerHTML='<div class="coin-face">'+(rand(2)?'앞면':'뒷면')+'</div>',70);setTimeout(()=>{clearInterval(t);out.classList.remove('rolling');out.innerHTML='<div class="coin-face">'+(rand(2)?'앞면':'뒷면')+'</div>'},560)});
   document.getElementById('makeOrder').addEventListener('click',()=>{const a=shuffle(namesOf('orderNames'));document.getElementById('orderResult').innerHTML='<div class="order-list">'+a.map((v,i)=>'<div class="order-item"><b>'+(i+1)+'</b>'+v.replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]))+'</div>').join('')+'</div>'});
   document.getElementById('makeTeams').addEventListener('click',()=>{const a=shuffle(namesOf('teamNames')),n=Math.min(+document.getElementById('teamCount').value,a.length),teams=Array.from({length:n},()=>[]);a.forEach((v,i)=>teams[i%n].push(v));const esc=v=>v.replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));document.getElementById('teamResult').innerHTML='<div class="team-grid">'+teams.map((t,i)=>'<div class="team-box"><strong>'+(i+1)+'팀</strong><div>'+t.map(esc).join('<br>')+'</div></div>').join('')+'</div>'});
+})();
+</script>
+
+<script>
+(() => {
+  const picker=document.getElementById('pickerArea'),tools=document.getElementById('gameTools'),pickerBtn=document.getElementById('showPicker'),toolsBtn=document.getElementById('showTools');
+  if(!picker||!tools)return;
+  function show(which){
+    const isPicker=which==='picker';
+    picker.hidden=!isPicker;tools.hidden=isPicker;
+    pickerBtn.classList.toggle('active',isPicker);toolsBtn.classList.toggle('active',!isPicker);
+    pickerBtn.setAttribute('aria-pressed',isPicker);toolsBtn.setAttribute('aria-pressed',!isPicker);
+  }
+  pickerBtn.addEventListener('click',()=>show('picker'));
+  toolsBtn.addEventListener('click',()=>show('tools'));
 })();
 </script>
 </body></html>
