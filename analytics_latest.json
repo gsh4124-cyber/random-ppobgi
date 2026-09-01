@@ -1,0 +1,83 @@
+{
+  "generated_at": "2026-08-31T15:22:54Z",
+  "source": "Cloudflare D1: random-ppobgi-analytics",
+  "period": "rolling_14_days",
+  "d1": [
+    {
+      "results": [
+        {
+          "event_date": "2026-08-24",
+          "event_name": "game_complete",
+          "method": "ladder",
+          "input_mode": "number",
+          "participant_bucket": "6-10",
+          "result_mode": "winner",
+          "total": 2
+        },
+        {
+          "event_date": "2026-08-24",
+          "event_name": "game_complete",
+          "method": "wheel",
+          "input_mode": "name",
+          "participant_bucket": "2-5",
+          "result_mode": "winner",
+          "total": 1
+        },
+        {
+          "event_date": "2026-08-24",
+          "event_name": "game_complete",
+          "method": "wheel",
+          "input_mode": "name",
+          "participant_bucket": "6-10",
+          "result_mode": "winner",
+          "total": 3
+        },
+        {
+          "event_date": "2026-08-24",
+          "event_name": "game_start",
+          "method": "ladder",
+          "input_mode": "number",
+          "participant_bucket": "6-10",
+          "result_mode": "winner",
+          "total": 2
+        },
+        {
+          "event_date": "2026-08-24",
+          "event_name": "game_start",
+          "method": "wheel",
+          "input_mode": "name",
+          "participant_bucket": "2-5",
+          "result_mode": "winner",
+          "total": 2
+        },
+        {
+          "event_date": "2026-08-24",
+          "event_name": "game_start",
+          "method": "wheel",
+          "input_mode": "name",
+          "participant_bucket": "6-10",
+          "result_mode": "winner",
+          "total": 4
+        }
+      ],
+      "success": true,
+      "meta": {
+        "served_by": "v3-prod",
+        "served_by_region": "APAC",
+        "served_by_colo": "ICN",
+        "served_by_primary": true,
+        "timings": {
+          "sql_duration_ms": 0.543
+        },
+        "duration": 0.543,
+        "changes": 0,
+        "last_row_id": 0,
+        "changed_db": false,
+        "size_after": 20480,
+        "rows_read": 12,
+        "rows_written": 0,
+        "total_attempts": 1
+      }
+    }
+  ]
+}
