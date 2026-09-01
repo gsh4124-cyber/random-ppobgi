@@ -673,6 +673,146 @@
   .actions{grid-template-columns:1fr!important}
 }
 
+
+/* v51 capsule machine realism */
+.capsule-game{max-width:450px!important;padding:4px 0 2px}
+.capsule-machine{
+  min-height:478px!important;
+  padding:18px 22px 122px!important;
+  border-radius:48% 48% 38px 38px / 17% 17% 38px 38px!important;
+  border:1px solid rgba(69,52,38,.14)!important;
+  background:
+    linear-gradient(180deg,#f4f0ea 0 61%,#d4cbc0 61% 67%,#bdb2a5 67% 100%)!important;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.95),
+    inset 0 -2px 0 rgba(70,53,38,.13),
+    0 24px 44px rgba(54,39,27,.14)!important;
+}
+.capsule-machine::before{
+  content:"";
+  position:absolute;
+  left:10px;right:10px;bottom:8px;height:112px;
+  border-radius:28px 28px 32px 32px;
+  background:linear-gradient(180deg,rgba(255,255,255,.25),rgba(82,65,50,.08));
+  border:1px solid rgba(72,55,40,.08);
+  pointer-events:none;
+}
+.capsule-top{
+  position:relative;z-index:4;
+  width:72%;height:42px!important;margin:0 auto 9px!important;
+  border-radius:22px 22px 14px 14px!important;
+  letter-spacing:.14em!important;
+}
+.capsule-globe{
+  z-index:2;
+  height:276px!important;
+  margin:0 auto;
+  border-radius:50% 50% 32% 32% / 56% 56% 28% 28%!important;
+  border:3px solid rgba(88,69,52,.15)!important;
+  background:
+    radial-gradient(circle at 31% 17%,rgba(255,255,255,.98),rgba(255,255,255,.43) 19%,rgba(255,255,255,.16) 50%,rgba(105,89,74,.08) 100%)!important;
+  box-shadow:
+    inset 0 0 0 7px rgba(255,255,255,.25),
+    inset 0 -25px 34px rgba(82,62,45,.10),
+    0 12px 24px rgba(54,39,27,.09)!important;
+}
+.capsule-globe::before{
+  left:12%!important;top:9%!important;width:20%!important;height:37%!important;
+  border-radius:999px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(255,255,255,0))!important;
+}
+.capsule-globe::after{
+  left:8%!important;right:8%!important;bottom:7px!important;height:30px!important;
+  background:radial-gradient(ellipse,rgba(72,53,36,.20),rgba(72,53,36,0) 72%)!important;
+}
+.capsule-ball{
+  width:48px!important;height:48px!important;
+  border-radius:50%!important;
+  border:2px solid rgba(255,255,255,.76)!important;
+  font-size:10px!important;
+  overflow:hidden;
+  box-shadow:
+    inset 0 9px 10px rgba(255,255,255,.28),
+    inset 0 -8px 10px rgba(73,39,24,.13),
+    0 7px 14px rgba(54,35,22,.18)!important;
+}
+.capsule-ball::before{
+  left:7px!important;right:7px!important;top:5px!important;height:27%!important;
+  border-radius:50%!important;background:rgba(255,255,255,.36)!important;
+}
+.capsule-ball::after{
+  left:0!important;right:0!important;top:50%!important;height:2px!important;
+  background:rgba(255,255,255,.78)!important;
+  box-shadow:0 1px 0 rgba(72,48,30,.15)!important;
+}
+.capsule-neck{
+  position:relative;z-index:3;
+  width:156px!important;height:30px!important;
+  border-radius:0 0 22px 22px!important;
+  background:linear-gradient(180deg,#d6cec4,#aaa094)!important;
+  box-shadow:0 5px 10px rgba(57,42,29,.10);
+}
+.capsule-base{
+  z-index:3;width:276px!important;height:112px!important;bottom:17px!important;
+  border-radius:30px 30px 25px 25px!important;
+  background:linear-gradient(180deg,#665b50,#2b2621)!important;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.12),0 10px 20px rgba(43,30,20,.18)!important;
+}
+.capsule-base::before{
+  left:20px!important;top:20px!important;width:48px!important;height:25px!important;
+  border-radius:9px!important;background:linear-gradient(180deg,#2a2521,#111)!important;
+}
+.capsule-base::after{
+  left:auto!important;right:18px!important;top:16px!important;width:58px!important;height:58px!important;
+  border-radius:50%!important;border:5px solid rgba(255,255,255,.13)!important;
+  background:radial-gradient(circle,#171411 0 46%,#453c34 48% 100%);
+}
+.capsule-handle{
+  z-index:6;right:24px!important;bottom:128px!important;
+  width:22px!important;height:86px!important;border-radius:999px!important;
+  background:linear-gradient(90deg,#81766b,#e2dad0 48%,#756a5f)!important;
+  box-shadow:0 5px 10px rgba(48,33,21,.14);
+}
+.capsule-handle::after{
+  top:-15px!important;width:44px!important;height:44px!important;
+  background:radial-gradient(circle at 35% 25%,#f78478,#c63d34 52%,#8f201c)!important;
+  box-shadow:inset 0 5px 7px rgba(255,255,255,.26),0 7px 14px rgba(64,28,20,.22)!important;
+}
+.capsule-coin{z-index:6;left:36px!important;bottom:55px!important;width:20px!important;height:45px!important}
+.capsule-chute{
+  z-index:5;bottom:82px!important;width:104px!important;height:72px!important;
+  border-radius:15px 15px 27px 27px!important;
+  border:4px solid #51473f!important;
+  background:radial-gradient(ellipse at 50% 15%,#24201c,#080706 70%)!important;
+  box-shadow:inset 0 8px 16px rgba(0,0,0,.62),0 3px 0 rgba(255,255,255,.08)!important;
+}
+.capsule-tray{
+  z-index:7;bottom:28px!important;width:184px!important;height:54px!important;
+  border-radius:12px 12px 24px 24px!important;
+  background:linear-gradient(180deg,#4b423a,#1f1b18)!important;
+  border:2px solid rgba(255,255,255,.10)!important;
+  letter-spacing:.08em;
+  box-shadow:inset 0 7px 12px rgba(0,0,0,.28),0 3px 0 rgba(255,255,255,.06)!important;
+}
+.capsule-drop{
+  width:50px!important;height:50px!important;border-radius:50%!important;
+  bottom:92px!important;
+}
+.capsule-half{width:48px!important;height:30px!important;border-radius:50% 50% 12px 12px!important}
+@media(max-width:500px){
+  .capsule-game{max-width:390px!important}
+  .capsule-machine{min-height:426px!important;padding:15px 15px 108px!important}
+  .capsule-top{height:38px!important;font-size:10px!important}
+  .capsule-globe{height:242px!important}
+  .capsule-ball{width:43px!important;height:43px!important}
+  .capsule-neck{width:140px!important;height:27px!important}
+  .capsule-base{width:min(258px,78vw)!important;height:101px!important}
+  .capsule-handle{right:19px!important;bottom:116px!important;height:76px!important}
+  .capsule-handle::after{width:40px!important;height:40px!important}
+  .capsule-chute{bottom:73px!important;width:94px!important;height:66px!important}
+  .capsule-tray{bottom:25px!important;width:166px!important;height:50px!important}
+}
+
 </style>
 </head>
 <body>
