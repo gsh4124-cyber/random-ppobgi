@@ -13,10 +13,18 @@ jobs:
       - name: JavaScript syntax
         run: |
           node --check full-app-loader.js
-          node --check global-i18n.js
-          node --check global-i18n-dynamic.js
-          node --check ko-language.js
+          node --check locales.js
+          node --check i18n-v2.js
+          node --check language-switch.js
           node --check info-i18n.js
+          node --check functions/_middleware.js
+      - name: Locale catalog has all 16 foreign languages
+        run: |
+          set -eu
+          for lang in en ja es zh fr de pt id hi pl it nl tr vi th ar; do
+            grep -q "^${lang}:{" locales.js
+          done
+          grep -q 'window.RandomPickerLocales=P' locales.js
       - name: Language route shells
         run: |
           set -eu
@@ -25,14 +33,29 @@ jobs:
             grep -q "rel=\"canonical\"" "$lang/index.html"
             grep -q "/full-app-loader.js" "$lang/index.html"
           done
-      - name: One localization runtime path
+      - name: One active localization runtime path
         run: |
           set -eu
-          grep -q '/global-i18n.js' full-app-loader.js
+          grep -q '/locales.js' full-app-loader.js
+          grep -q '/i18n-v2.js' full-app-loader.js
+          grep -q '/language-switch.js' full-app-loader.js
+          ! grep -q '/global-i18n.js' full-app-loader.js
+          ! grep -q '/global-i18n-dynamic.js' full-app-loader.js
           ! grep -q '/full-i18n-safe.js' full-app-loader.js
           ! grep -q '/i18n-cleanup.js' full-app-loader.js
-          grep -q '/ko-language.js' functions/_middleware.js
-          grep -q 'global-i18n-dynamic.js' functions/_middleware.js
+          grep -q '/language-switch.js' functions/_middleware.js
+          ! grep -q '/ko-language.js' functions/_middleware.js
+          ! grep -q '/global-i18n.js' functions/_middleware.js
+      - name: Core feature localization keys exist
+        run: |
+          set -eu
+          for key in ladder wheel lot pinball race capsule slot bomb; do grep -q "${key}:" locales.js; done
+          for key in dice yut coin order team; do grep -q "${key}:" locales.js; done
+          grep -q "rerollAll:" locales.js
+          grep -q "rerollExclude:" locales.js
+          grep -q "showNow:" locales.js
+          grep -q "pinballAria:" locales.js
+          grep -q "bombWinner:" locales.js
       - name: Sitemap contains all 17 language URLs
         run: |
           set -eu
