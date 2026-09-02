@@ -16,7 +16,7 @@ export async function onRequest(context) {
   const languageMatch=url.pathname.match(/^\/(en|ja|es|zh|fr|de|pt|id|hi|pl|it|nl|tr|vi|th|ar)\/$/);
 
   if(fullSource){
-    return new HTMLRewriter().on('body',{element(el){el.append('<script src="/global-i18n-dynamic.js"><\/script>',{html:true});}}).transform(response);
+    return new HTMLRewriter().on('body',{element(el){el.append('<script src="/i18n-dom-guard.js"><\/script><script src="/global-i18n-dynamic.js"><\/script>',{html:true});}}).transform(response);
   }
 
   if(languageMatch){
@@ -37,7 +37,7 @@ export async function onRequest(context) {
   }
 
   let lang=url.searchParams.get('lang')||'ko';if(!supported.has(lang))lang='ko';if(lang==='ko')return response;
-  const init=`<script>window.__RANDOM_PICKER_LANG__=${JSON.stringify(lang)};<\/script><script src="/global-i18n.js"><\/script><script src="/info-i18n.js"><\/script>`;
+  const init=`<script>window.__RANDOM_PICKER_LANG__=${JSON.stringify(lang)};<\/script><script src="/i18n-dom-guard.js"><\/script><script src="/global-i18n.js"><\/script><script src="/info-i18n.js"><\/script>`;
   return new HTMLRewriter()
     .on('html',{element(el){el.setAttribute('lang',lang);if(lang==='ar')el.setAttribute('dir','rtl');}})
     .on('body',{element(el){el.append(init,{html:true});}})
