@@ -1,0 +1,136 @@
+name: Finalize global i18n
+
+on:
+  push:
+    paths:
+      - '.github/workflows/finalize-global-i18n.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate language routes and support pages
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),vm=require('vm'),path=require('path');
+          global.window={};
+          vm.runInThisContext(fs.readFileSync('locales.js','utf8'));
+          vm.runInThisContext(fs.readFileSync('info-locales.js','utf8'));
+          const P=window.RandomPickerLocales,I=window.RandomPickerInfoLocales;
+          const langs=Object.keys(P), origin='https://random-ppobgi.pages.dev';
+          const all=[['ko','ko-KR','ltr','한국어'],...langs.map(c=>[c,P[c].htmlLang,P[c].dir,P[c].label])];
+          const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          function hreflangs(suffix=''){
+            const links=[`<link rel="alternate" hreflang="ko" href="${origin}/${suffix}">`];
+            for(const c of langs)links.push(`<link rel="alternate" hreflang="${c}" href="${origin}/${c}/${suffix}">`);
+            links.push(`<link rel="alternate" hreflang="x-default" href="${origin}/en/${suffix}">`);return links.join('');
+          }
+          for(const c of langs){
+            const p=P[c],dir=p.dir==='rtl'?' dir="rtl"':'';
+            fs.mkdirSync(c,{recursive:true});
+            fs.writeFileSync(`${c}/index.html`,`<!doctype html><html lang="${esc(p.htmlLang)}"${dir}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)}</title><meta name="description" content="${esc(p.description)}"><link rel="canonical" href="${origin}/${c}/">${hreflangs('')}<link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta property="og:type" content="website"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.description)}"><meta property="og:url" content="${origin}/${c}/"><meta property="og:image" content="${origin}/og-image.png"></head><body><p style="font-family:system-ui;padding:24px">${esc(p.brand)}</p><script>window.__RANDOM_PICKER_LANG__=${JSON.stringify(c)};<\/script><script src="/full-app-loader.js"><\/script></body></html>`, 'utf8');
+            for(const pageName of ['about','guide','privacy','terms','contact']){
+              const d=I[c][pageName],suffix=`${pageName}/`;
+              fs.mkdirSync(`${c}/${pageName}`,{recursive:true});
+              fs.writeFileSync(`${c}/${pageName}/index.html`,`<!doctype html><html lang="${esc(p.htmlLang)}"${dir}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(d.title)} | ${esc(p.brand)}</title><meta name="description" content="${esc(d.description)}"><link rel="canonical" href="${origin}/${c}/${suffix}">${hreflangs(suffix)}<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/info.css"><meta property="og:type" content="article"><meta property="og:title" content="${esc(d.title)} | ${esc(p.brand)}"><meta property="og:description" content="${esc(d.description)}"><meta property="og:url" content="${origin}/${c}/${suffix}"><meta property="og:image" content="${origin}/og-image.png"></head><body data-page="${pageName}"><main><p>${esc(d.title)}</p></main><script>window.__RANDOM_PICKER_LANG__=${JSON.stringify(c)};<\/script><script src="/locales.js"><\/script><script src="/info-locales.js"><\/script><script src="/info-page.js"><\/script></body></html>`, 'utf8');
+            }
+          }
+          // sitemap: home + 5 support-page clusters with language alternates.
+          let out=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'];
+          function entry(loc,code,suffix=''){
+            out.push('  <url>',`    <loc>${loc}</loc>`);
+            out.push(`    <xhtml:link rel="alternate" hreflang="ko" href="${origin}/${suffix}" />`);
+            for(const c of langs)out.push(`    <xhtml:link rel="alternate" hreflang="${c}" href="${origin}/${c}/${suffix}" />`);
+            out.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${origin}/en/${suffix}" />`,'  </url>');
+          }
+          entry(`${origin}/`,'ko','');for(const c of langs)entry(`${origin}/${c}/`,c,'');
+          for(const pageName of ['about','guide','privacy','terms','contact']){entry(`${origin}/${pageName}/`,'ko',`${pageName}/`);for(const c of langs)entry(`${origin}/${c}/${pageName}/`,c,`${pageName}/`);}
+          out.push('</urlset>');fs.writeFileSync('sitemap.xml',out.join('\n')+'\n');
+          NODE
+
+      - name: Patch Korean root and remove legacy localization layers
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          p=Path('index.html');s=p.read_text(encoding='utf-8')
+          origin='https://random-ppobgi.pages.dev'
+          langs=['en','ja','es','zh','fr','de','pt','id','hi','pl','it','nl','tr','vi','th','ar']
+          # Remove any old root-level alternate block generated by prior experiments, then add one canonical block.
+          import re
+          s=re.sub(r'\s*<link rel="alternate" hreflang="(?:ko|en|ja|es|zh|fr|de|pt|id|hi|pl|it|nl|tr|vi|th|ar|x-default)"[^>]*>','',s)
+          canon='<link rel="canonical" href="https://random-ppobgi.pages.dev/" />'
+          alt=[f'<link rel="alternate" hreflang="ko" href="{origin}/" />']+[f'<link rel="alternate" hreflang="{c}" href="{origin}/{c}/" />' for c in langs]+[f'<link rel="alternate" hreflang="x-default" href="{origin}/en/" />']
+          if canon not in s: raise SystemExit('root canonical marker missing')
+          s=s.replace(canon,canon+'\n'+'\n'.join(alt),1)
+          if '/language-switch.js' not in s:
+            if '</body>' not in s: raise SystemExit('body end missing')
+            s=s.replace('</body>','<script src="/language-switch.js"></script>\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+          # Old runtime translators and middleware are deliberately removed: one engine and one selector only.
+          for f in ['global-i18n.js','full-i18n-safe.js','full-i18n.js','i18n-cleanup.js','global-basic.js','functions/_middleware.js']:
+            q=Path(f)
+            if q.exists(): q.unlink()
+          PY
+
+      - name: Add structural regression test
+        shell: bash
+        run: |
+          cat > tests/i18n-global.test.mjs <<'EOF'
+          import test from 'node:test';
+          import assert from 'node:assert/strict';
+          import fs from 'node:fs';
+          import vm from 'node:vm';
+          const ctx={window:{}};vm.createContext(ctx);
+          vm.runInContext(fs.readFileSync('locales.js','utf8'),ctx);vm.runInContext(fs.readFileSync('info-locales.js','utf8'),ctx);
+          const P=ctx.window.RandomPickerLocales,I=ctx.window.RandomPickerInfoLocales;
+          const langs=['en','ja','es','zh','fr','de','pt','id','hi','pl','it','nl','tr','vi','th','ar'];
+          const flatten=o=>Object.values(o||{}).flatMap(v=>v&&typeof v==='object'?flatten(v):[String(v??'')]);
+          test('all 16 foreign locale packs exist and contain no Hangul values',()=>{assert.deepEqual(Object.keys(P).sort(),[...langs].sort());for(const l of langs){assert.ok(P[l].title&&P[l].description&&P[l].brand);assert.equal(/[가-힣]/.test(flatten(P[l]).join('\n')),false,`Hangul in locale ${l}`);assert.ok(I[l]);assert.equal(/[가-힣]/.test(flatten(I[l]).join('\n')),false,`Hangul in info locale ${l}`)}});
+          test('one localization engine and one selector are wired',()=>{const loader=fs.readFileSync('full-app-loader.js','utf8'),root=fs.readFileSync('index.html','utf8');assert.match(loader,/i18n-v2\.js/);assert.doesNotMatch(loader,/global-i18n|full-i18n-safe|i18n-cleanup/);assert.match(root,/language-switch\.js/);for(const f of ['global-i18n.js','full-i18n-safe.js','full-i18n.js','i18n-cleanup.js','global-basic.js','functions/_middleware.js'])assert.equal(fs.existsSync(f),false,f)});
+          test('home and support routes exist with SEO',()=>{for(const l of langs){const h=fs.readFileSync(`${l}/index.html`,'utf8');assert.match(h,new RegExp(`canonical[^>]+/${l}/`));assert.match(h,/hreflang="x-default"/);assert.match(h,/full-app-loader\.js/);for(const page of ['about','guide','privacy','terms','contact']){const x=fs.readFileSync(`${l}/${page}/index.html`,'utf8');assert.match(x,new RegExp(`canonical[^>]+/${l}/${page}/`));assert.match(x,/hreflang="x-default"/);assert.match(x,/info-page\.js/)}}});
+          test('sitemap includes all language home and info routes',()=>{const s=fs.readFileSync('sitemap.xml','utf8');for(const l of langs){assert.match(s,new RegExp(`/${l}/</loc>`));for(const p of ['about','guide','privacy','terms','contact'])assert.match(s,new RegExp(`/${l}/${p}/</loc>`))}assert.match(s,/xmlns:xhtml=/);assert.match(s,/hreflang="x-default"/)});
+          EOF
+
+      - name: Static and regression QA
+        shell: bash
+        run: |
+          node --check locales.js
+          node --check info-locales.js
+          node --check i18n-v2.js
+          node --check language-switch.js
+          node --check full-app-loader.js
+          node --check info-page.js
+          node --test tests/*.test.mjs
+
+      - name: Update project status
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          p=Path('PROJECT_STATUS.md');s=p.read_text(encoding='utf-8')
+          block='''\n## 글로벌 다국어 완제품 구조 — 2026-09-02\n\n- 한국어 `/` + 해외 16개 언어(`/en/ /ja/ /es/ /zh/ /fr/ /de/ /pt/ /id/ /hi/ /pl/ /it/ /nl/ /tr/ /vi/ /th/ /ar/`)를 같은 8종 뽑기 게임 + 게임도구 본체로 운영\n- 언어별 기능 코드 복제 대신 `index.html` 공통 코어 + `full-app-loader.js` + `locales.js` + `i18n-v2.js` 구조로 통합\n- 언어 선택기는 `language-switch.js` 하나만 사용하며 기존 헤더 오른쪽 끝에 현재 언어를 표시\n- 과거 중복 번역/선택기 레이어(`global-i18n`, `full-i18n*`, `i18n-cleanup`, middleware selector)는 제거\n- 16개 해외 언어에서 5개 정보 페이지(소개/사용방법/개인정보/약관/문의)를 해당 언어 URL로 생성\n- 홈 및 정보 페이지에 canonical/hreflang/html lang/title/description을 적용하고 sitemap에 언어 alternate를 포함\n- 이 단계의 완료는 코드 구조/정적 회귀검사 기준이며, 실제 Cloudflare Pages 공개 배포 및 브라우저 상호작용 QA는 별도 확인 후 확정\n'''
+          marker='## 현재 병목'
+          if '## 글로벌 다국어 완제품 구조 — 2026-09-02' not in s:
+            if marker not in s: raise SystemExit('status marker missing')
+            s=s.replace(marker,block+'\n'+marker,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Commit finalized global structure
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
+          git commit -m 'Finalize shared 17-language random picker structure'
+          git push
