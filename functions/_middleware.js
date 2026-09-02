@@ -6,6 +6,11 @@ export async function onRequest(context) {
   const supported = new Set(['ko','en','ja','es','zh','fr','de','pt','id','hi','pl','it','nl','tr','vi','th','ar']);
   const infoPage = /^\/(about|guide|privacy|terms|contact)\/$/.test(url.pathname);
   const rootPage = url.pathname === '/';
+  const fullSource = url.pathname === '/index.html';
+
+  if (fullSource) {
+    return new HTMLRewriter().on('body', { element(el) { el.append('<script src="/global-i18n-dynamic.js"><\/script>', { html: true }); } }).transform(response);
+  }
   if (!rootPage && !infoPage) return response;
 
   if (rootPage) {
