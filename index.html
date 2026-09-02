@@ -972,6 +972,25 @@
 @keyframes yutPhysics{0%{transform:translate(-82px,48px) rotate(-38deg) scale(.78)}34%{transform:translate(-20px,-55px) rotate(142deg) scale(1.02)}57%{transform:translate(8px,-6px) rotate(276deg)}72%{transform:translate(-4px,-23px) rotate(338deg)}86%{transform:translate(2px,1px) rotate(390deg)}94%{transform:translate(-1px,-6px) rotate(402deg)}100%{transform:none}}
 @keyframes yutPhysicsAlt{0%{transform:translate(82px,45px) rotate(35deg) scale(.8)}36%{transform:translate(19px,-60px) rotate(-150deg) scale(1.03)}60%{transform:translate(-7px,-4px) rotate(-285deg)}74%{transform:translate(4px,-20px) rotate(-345deg)}87%{transform:translate(-2px,1px) rotate(-397deg)}95%{transform:translate(1px,-5px) rotate(-408deg)}100%{transform:none}}
 @media(max-width:430px){.die{width:54px;height:54px}.yut-stick{width:29px!important;height:92px!important}}
+
+/* v60 drop-and-throw motion */
+.rolling .die{animation:diceDrop 1.02s cubic-bezier(.18,.72,.2,1) both!important}
+.rolling .die:nth-child(2){animation-name:diceDrop2!important;animation-delay:.04s!important}
+.rolling .die:nth-child(3){animation-name:diceDrop3!important;animation-delay:.08s!important}
+.rolling .die:nth-child(4){animation-name:diceDrop2!important;animation-delay:.02s!important}
+.rolling .die:nth-child(5){animation-name:diceDrop3!important;animation-delay:.06s!important}
+.rolling .die:nth-child(6){animation-name:diceDrop!important;animation-delay:.1s!important}
+@keyframes diceDrop{0%{transform:translate(-9px,-150px) rotate3d(1,1,.4,-210deg) scale(.72);opacity:.2}42%{transform:translate(5px,7px) rotate3d(1,.6,.3,35deg) scale(1.04);opacity:1}58%{transform:translate(-3px,-29px) rotate3d(.5,1,.2,-18deg) scale(.98)}73%{transform:translate(2px,3px) rotate(7deg)}84%{transform:translate(-1px,-11px) rotate(-4deg)}93%{transform:translate(0,1px) rotate(1deg)}100%{transform:none}}
+@keyframes diceDrop2{0%{transform:translate(7px,-165px) rotate3d(.6,1,.5,240deg) scale(.7);opacity:.15}44%{transform:translate(-6px,8px) rotate3d(1,.5,.2,-30deg) scale(1.05);opacity:1}60%{transform:translate(4px,-25px) rotate3d(.4,1,.3,16deg) scale(.98)}75%{transform:translate(-2px,3px) rotate(-6deg)}86%{transform:translate(1px,-9px) rotate(3deg)}94%{transform:translate(0,1px)}100%{transform:none}}
+@keyframes diceDrop3{0%{transform:translate(2px,-142px) rotate3d(1,.4,1,-260deg) scale(.74);opacity:.2}40%{transform:translate(3px,6px) rotate3d(.7,1,.2,28deg) scale(1.03);opacity:1}57%{transform:translate(-4px,-32px) rotate3d(1,.4,.2,-15deg) scale(.99)}72%{transform:translate(2px,3px) rotate(5deg)}84%{transform:translate(-1px,-12px) rotate(-3deg)}94%{transform:translate(0,1px)}100%{transform:none}}
+.rolling .yut-stick{animation:yutToss 1.08s cubic-bezier(.2,.7,.2,1) both!important}
+.rolling .yut-stick:nth-child(2){animation-name:yutToss2!important;animation-delay:.035s!important}
+.rolling .yut-stick:nth-child(3){animation-name:yutToss3!important;animation-delay:.07s!important}
+.rolling .yut-stick:nth-child(4){animation-name:yutToss4!important;animation-delay:.105s!important}
+@keyframes yutToss{0%{transform:translate(-18px,105px) rotate(-18deg) scale(.78);opacity:.25}35%{transform:translate(-30px,-73px) rotate(118deg) scale(1.02);opacity:1}66%{transform:translate(-19px,-19px) rotate(203deg)}79%{transform:translate(-24px,4px) rotate(218deg)}89%{transform:translate(-22px,-10px) rotate(211deg)}100%{transform:translate(-22px,0) rotate(214deg)}}
+@keyframes yutToss2{0%{transform:translate(-6px,110px) rotate(12deg) scale(.8);opacity:.2}38%{transform:translate(-10px,-82px) rotate(-105deg) scale(1.03);opacity:1}67%{transform:translate(-7px,-17px) rotate(-184deg)}80%{transform:translate(-8px,4px) rotate(-197deg)}90%{transform:translate(-7px,-9px) rotate(-191deg)}100%{transform:translate(-7px,0) rotate(-194deg)}}
+@keyframes yutToss3{0%{transform:translate(7px,108px) rotate(-10deg) scale(.79);opacity:.2}36%{transform:translate(13px,-78px) rotate(130deg) scale(1.02);opacity:1}65%{transform:translate(9px,-20px) rotate(212deg)}79%{transform:translate(10px,4px) rotate(226deg)}90%{transform:translate(9px,-10px) rotate(219deg)}100%{transform:translate(9px,0) rotate(222deg)}}
+@keyframes yutToss4{0%{transform:translate(18px,112px) rotate(16deg) scale(.78);opacity:.2}39%{transform:translate(30px,-70px) rotate(-120deg) scale(1.03);opacity:1}68%{transform:translate(23px,-16px) rotate(-198deg)}81%{transform:translate(25px,4px) rotate(-211deg)}91%{transform:translate(24px,-8px) rotate(-205deg)}100%{transform:translate(24px,0) rotate(-208deg)}}
 </style>
 </head>
 <body>
