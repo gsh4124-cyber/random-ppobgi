@@ -1,0 +1,86 @@
+name: Fix i18n residuals
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-i18n-residuals.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch residual Korean strings and QA false positive
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          p=Path('i18n-v2.js')
+          s=p.read_text(encoding='utf-8')
+
+          old="""    attr('#soundToggle','aria-label',pack.dynamic.soundOn);attr('#soundToggle','title',pack.dynamic.soundOn);\n    attr('#numberTab','aria-label',pack.number);attr('#nameTab','aria-label',pack.name);"""
+          new="""    attr('#soundToggle','aria-label',pack.dynamic.soundOn);attr('#soundToggle','title',pack.dynamic.soundOn);\n    attr('#numberTab','aria-label',pack.number);attr('#nameTab','aria-label',pack.name);\n    attr('.section-switch','aria-label',`${pack.pickerGames} / ${pack.gameTools}`);\n    attr('.methods','aria-label',pack.pickMethod);\n    attr('#inputTabs','aria-label',`${pack.number} / ${pack.name}`);\n    const bombMinus=q('[data-target=\"bombSeconds\"][data-delta=\"-1\"]'),bombPlus=q('[data-target=\"bombSeconds\"][data-delta=\"1\"]');\n    if(bombMinus)bombMinus.setAttribute('aria-label',`− ${pack.bombTime}`);if(bombPlus)bombPlus.setAttribute('aria-label',`+ ${pack.bombTime}`);\n    attr('#bombSeconds','aria-label',pack.bombTime);\n    const totalMinus=q('[data-target=\"totalPeople\"][data-delta=\"-1\"]'),totalPlus=q('[data-target=\"totalPeople\"][data-delta=\"1\"]');\n    if(totalMinus)totalMinus.setAttribute('aria-label',`− ${pack.totalPeople}`);if(totalPlus)totalPlus.setAttribute('aria-label',`+ ${pack.totalPeople}`);\n    attr('#totalPeople','aria-label',pack.totalPeople);\n    const pickMinus=q('[data-target=\"pickCount\"][data-delta=\"-1\"]'),pickPlus=q('[data-target=\"pickCount\"][data-delta=\"1\"]');\n    if(pickMinus)pickMinus.setAttribute('aria-label',`− ${pack.pickCount}`);if(pickPlus)pickPlus.setAttribute('aria-label',`+ ${pack.pickCount}`);\n    attr('#pickCount','aria-label',pack.pickCount);\n    attr('.tool-tabs','aria-label',pack.gameTools);\n    attr('.service-info','aria-label',pack.service.faqQ);"""
+          if old not in s:
+            raise SystemExit('static accessibility anchor missing')
+          s=s.replace(old,new,1)
+
+          old2="""    ['효과음 켜기',pack.dynamic.soundOn],['효과음 끄기',pack.dynamic.soundOff],['당첨',pack.winner],['꽝',pack.dynamic.lose],['폭탄',pack.dynamic.bomb],['제비',pack.dynamic.lot],"""
+          new2="""    ['효과음 켜기',pack.dynamic.soundOn],['효과음 끄기',pack.dynamic.soundOff],['당첨',pack.winner],['꽝',pack.dynamic.lose],['폭탄',pack.dynamic.bomb],['제비',pack.dynamic.lot],['결과',pack.result],['참가자 이름이 적힌 회전 룰렛',pack.methods.wheel],"""
+          if old2 not in s:
+            raise SystemExit('exact map anchor missing')
+          s=s.replace(old2,new2,1)
+
+          old3="""    x=x.replace(/우승!/g,pack.dynamic.champion).replace(/당첨/g,pack.winner).replace(/꽝/g,pack.dynamic.lose);"""
+          new3="""    x=x.replace(/우승!/g,pack.dynamic.champion).replace(/당첨/g,pack.winner).replace(/꽝/g,pack.dynamic.lose).replace(/결과/g,pack.result);"""
+          if old3 not in s:
+            raise SystemExit('dynamic replacement anchor missing')
+          s=s.replace(old3,new3,1)
+
+          # Foreign footer must stay inside the same locale URL tree.
+          old4="""if(paths[i])a.href=`/${paths[i]}/?lang=${encodeURIComponent(lang)}`;"""
+          new4="""if(paths[i])a.href=`/${lang}/${paths[i]}/`;"""
+          if old4 in s:
+            s=s.replace(old4,new4,1)
+
+          p.write_text(s,encoding='utf-8')
+
+          t=Path('tests/i18n-browser-smoke.mjs')
+          x=t.read_text(encoding='utf-8')
+          old5="""  const visibleText = await page.locator('body').innerText();\n  assert(!korean.test(visibleText), `${lang}: Korean remains in initial visible UI: ${koreanLines(visibleText)}`);"""
+          new5="""  const visibleText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });\n  assert(!korean.test(visibleText), `${lang}: Korean remains in initial visible UI: ${koreanLines(visibleText)}`);"""
+          if old5 not in x: raise SystemExit('initial visible test anchor missing')
+          x=x.replace(old5,new5,1)
+
+          old6="""  const dynamicText = await page.locator('body').innerText();\n  assert(!korean.test(dynamicText), `${lang}: Korean remains after picker execution: ${koreanLines(dynamicText)}`);"""
+          new6="""  const dynamicText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });\n  assert(!korean.test(dynamicText), `${lang}: Korean remains after picker execution: ${koreanLines(dynamicText)}`);"""
+          if old6 not in x: raise SystemExit('dynamic visible test anchor missing')
+          x=x.replace(old6,new6,1)
+
+          old7="""  const toolText = await page.locator('body').innerText();\n  assert(!korean.test(toolText), `${lang}: Korean remains in game tools: ${koreanLines(toolText)}`);"""
+          new7="""  const toolText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });\n  assert(!korean.test(toolText), `${lang}: Korean remains in game tools: ${koreanLines(toolText)}`);"""
+          if old7 not in x: raise SystemExit('tool visible test anchor missing')
+          x=x.replace(old7,new7,1)
+          t.write_text(x,encoding='utf-8')
+          PY
+
+      - name: Syntax check
+        run: |
+          node --check i18n-v2.js
+          node --check tests/i18n-browser-smoke.mjs
+
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add i18n-v2.js tests/i18n-browser-smoke.mjs
+          if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
+          git commit -m 'Fix remaining multilingual UI strings'
+          git push
