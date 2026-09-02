@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-**v50 운영본 + 17개 언어 글로벌 공통 완제품 코드 반영 / 다국어 QA·실배포 확인 대기**
+**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 정적 QA PASS / Chromium 다국어 QA PASS / 실제 Cloudflare 최신 배포 확인 대기**
 
 - 운영 주소: https://random-ppobgi.pages.dev/
 - 배포 구조: Cloudflare Pages
@@ -42,23 +42,67 @@
 구조 원칙:
 
 - 한국어판과 해외 경량판을 따로 만들지 않는다.
-- 모든 언어가 동일한 한국어 본체의 8개 게임 + 게임 도구 코어를 사용하고 UI·동적 문구만 현지화한다.
+- 모든 언어가 동일한 `index.html`의 8개 게임 + 게임 도구 코어를 사용하고 UI·동적 문구만 현지화한다.
 - 언어별 기능 코드를 복제하지 않는다.
 - IP 기반 강제 전환을 사용하지 않는다.
 
-2026-09-02 수정:
+현재 활성 구조:
 
-- 과거 `full-i18n-safe.js` / `i18n-cleanup.js` / Cloudflare middleware가 서로 언어 선택기를 만들던 구조를 끊고 새 공통 런타임으로 통합
-- 한국어 루트는 `ko-language.js`, 해외 완제품은 `global-i18n.js` + `global-i18n-dynamic.js` 사용
-- 언어 선택기는 헤더 오른쪽 끝의 단일 `🌐 + select` 구조를 기준으로 함
-- 16개 해외 언어의 정적 UI·주요 동적 결과·번호모드 표기·게임도구를 현지화
-- `/about/`, `/guide/`, `/privacy/`, `/terms/`, `/contact/`는 `?lang=` 상태를 이어받아 현지화하는 `info-i18n.js` 추가
-- 아랍어는 `dir=rtl` 적용
-- language URL 응답에 `html lang`, 현지화 title/description, canonical, 17개 hreflang + x-default 구성
-- `sitemap.xml`은 한국어 + 16개 해외 언어 URL을 모두 포함
-- `.github/workflows/i18n-smoke.yml` 추가: JS 문법, 16개 route shell, 단일 i18n 런타임 경로, sitemap, hreflang 정적 점검
+- 해외 완제품 로더: `full-app-loader.js`
+- 16개 해외 언어 카탈로그: `locales.js`
+- 공통 해외 현지화 런타임: `i18n-v2.js`
+- 단일 언어 선택기: `language-switch.js`
+- 정보·법적 페이지 현지화 데이터: `info-locales.js`
+- 정보 페이지 런타임: `info-page.js`
+- 자동 검수: `.github/workflows/i18n-smoke.yml` + `tests/i18n-browser-smoke.mjs`
 
-중요: 이 상태는 **코드 반영 상태**다. GitHub CI 완료와 실제 Cloudflare Pages의 대표 7개 언어 브라우저 검수가 끝나기 전까지 글로벌 완료로 판정하지 않는다.
+2026-09-02 최종 수정·검증:
+
+- 과거 중복 언어 선택기 및 서로 경쟁하던 번역 레이어를 정리하고 공통 선택기/공통 런타임 구조로 통합
+- 언어 선택기는 기존 헤더 오른쪽 끝에 `🌐 + 현재 언어` 형태로 하나만 생성
+- 현재 언어를 선택기에 표시하고 동일 완제품의 해당 언어 URL로 이동
+- 16개 해외 언어의 정적 UI, 동적 게임 결과·진행문구, 게임도구, 접근성 `aria-label/title/placeholder`를 현지화
+- 동적으로 다시 생성되던 8개 게임명도 현지어로 재치환
+- 폭탄 시간 단위 및 직접 입력 접근성 문구 등 잔존 한국어 수정
+- 해외 정보 링크는 각 언어의 `/LANG/about/`, `/LANG/guide/`, `/LANG/privacy/`, `/LANG/terms/`, `/LANG/contact/` 경로를 유지
+- 아랍어는 RTL 적용
+- 언어 URL에 `html lang`, 현지화 title/description, canonical, hreflang + x-default 구조 적용
+- `sitemap.xml`에서 한국어 + 16개 해외 언어 URL 검증
+
+## QA 결과
+
+### 정적 QA — PASS
+
+GitHub Actions `i18n-smoke` 최신 검수에서 다음 항목이 모두 PASS했다.
+
+- JavaScript syntax
+- 16개 해외 locale catalog 존재
+- 16개 language route shell
+- 단일 활성 localization runtime path
+- 핵심 기능 localization key
+- sitemap 17개 언어 URL
+- SEO language alternate
+
+### Chromium 브라우저 QA — PASS
+
+GitHub Actions run `33622411890` / browser job `100222229034`에서 PASS했다.
+
+- 16개 해외 언어 초기 화면 전수검사
+- 언어 선택기 정확히 1개
+- 지구 아이콘 정확히 1개
+- 현재 언어 선택값 일치
+- 8개 뽑기 게임 존재
+- 게임도구 5종 존재
+- 번호/이름 모드 존재
+- 초기 화면 한국어 잔존 검사
+- `aria-label/title/placeholder` 한국어 잔존 검사
+- 아랍어 RTL 검사
+- 영어/일본어/스페인어/중국어/포르투갈어/아랍어 모바일에서 실제 룰렛 실행·결과 확인·게임도구 전환
+- 위 6개 해외 언어 모바일 가로 overflow 검사
+- 상호작용 후 언어 선택기 중복 재발 검사
+- 한국어 모바일에서 공통 언어 선택기 1개, 8개 게임, 5개 도구, 가로 overflow 검사
+
+따라서 저장소 코드와 로컬 Chromium 기준 다국어 기능/문자열 QA Gate는 PASS다.
 
 ## 운영 데이터
 
@@ -66,29 +110,25 @@
 - Production D1: `random-ppobgi-analytics`
 - Vault snapshot: `자동 사업운영/바이브코딩/페이지형/랜덤뽑기_analytics_latest.json`
 - workflow: `hwangje-vault/.github/workflows/random-picker-analytics-snapshot.yml`
-- workflow 기준 매일 00:20 KST에 최근 14일 aggregate를 갱신하도록 복구됨
 - 이름·당첨내용·입력문구·사용자 ID·세션 ID·광고 ID·쿠키는 수집하지 않음
-- 최초 검증 snapshot은 `game_start 8 / game_complete 6`으로 표본이 작아 제품 성과로 해석하지 않음
+- 최초 검증 snapshot은 표본이 작아 제품 성과로 해석하지 않음
 
 ## 사고분리·검증 순서
 
-한 실행창에서 연속 작업하더라도 다음 판단을 한 덩어리로 합치지 않는다.
-
 > 실제 데이터 회수 → 사실 정리 → 원인 가설 → 변경 설계 → 구현 → 독립 QA·회귀검수 → 배포 → 다시 실제 데이터
 
-- 구현자가 의도한 동작은 QA 증거가 아니다.
-- 내부 QA 통과는 외부 사용성과·검색성과·수익성과가 아니다.
-- 배포 후 실제 데이터가 이전 가설과 다르면 가설을 수정한다.
+- 구현 완료와 QA 통과를 구분한다.
+- QA 통과와 실제 공개 배포 확인을 구분한다.
+- 공개 배포와 실제 시장 성공을 구분한다.
+- 내부 QA 통과는 외부 사용성·검색성·수익성을 증명하지 않는다.
 
 ## 현재 병목
 
-- 2026-09-02 다국어 smoke workflow가 생성되었으나 최신 실행의 최종 PASS는 아직 회수하지 못함
-- 현재 ChatGPT 실행환경에서는 `random-ppobgi.pages.dev` 공개 URL 직접 열기가 허용되지 않아 한국어/영어/일본어/스페인어/중국어/포르투갈어/아랍어의 실제 Cloudflare 화면 검수를 아직 증명하지 못함
-- 최신 main 커밋에 Cloudflare 배포 성공을 증명하는 GitHub commit status가 게시되지 않음
-- 따라서 17개 언어 글로벌 확장은 `IMPLEMENTED / QA_PENDING / LIVE_DEPLOY_UNVERIFIED`로 취급
-- 외부 사용 표본이 아직 작아 제품 개선·확대 판단 근거가 부족함
-- QA·본인 테스트와 실제 외부 사용을 현재 집계만으로 완전히 분리하지 않음
-- sitemap 재처리 성공 여부는 다음 검색 점검에서 재확인 필요
+- 저장소 최신 코드는 정적 QA와 Chromium QA를 통과했다.
+- 현재 ChatGPT 실행환경에서는 `random-ppobgi.pages.dev` DNS/공개 URL을 독립적으로 열지 못해 **Cloudflare Pages가 최신 main을 실제 제공하고 있는지는 아직 검증하지 못했다.**
+- 따라서 현재 Gate는 `IMPLEMENTED / QA_PASS / LIVE_DEPLOY_UNVERIFIED`다.
+- 외부 사용 표본이 아직 작아 제품 개선·확대 판단 근거가 부족하다.
+- sitemap의 검색엔진 재처리 결과는 별도 검색 점검에서 확인한다.
 
 ## 운영 원칙
 
@@ -99,8 +139,7 @@
 
 ## 다음 행동
 
-1. 최신 `i18n-smoke`가 PASS하는지 회수
-2. Cloudflare Pages 최신 main 배포 여부 확인
-3. 실제 공개 페이지에서 최소 한국어/영어/일본어/스페인어/중국어/포르투갈어/아랍어를 열어 언어 선택기 1개, 헤더 오른쪽 위치, 한국어 잔존, 8개 게임, 게임 도구, 번호/이름, 실행·결과·재추첨, 모바일을 확인
-4. 나머지 10개 언어는 코드·문자열 기준 전수검사
-5. 실제 배포 QA까지 통과한 뒤에만 글로벌 완료로 상태 변경
+1. Cloudflare Pages가 최신 main을 실제 배포했는지 확인
+2. 공개 주소에서 최소 한국어/영어/일본어/스페인어/중국어/포르투갈어/아랍어를 최종 확인
+3. 공개 배포 QA가 통과하면 글로벌 다국어 구현을 `LIVE_DEPLOY_VERIFIED`로 승격
+4. 이후 Search Console 및 실제 외부 사용 데이터를 회수해 검색·사용 성과를 별도 판단
