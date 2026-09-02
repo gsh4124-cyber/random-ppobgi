@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 해외 언어 클라이언트 로딩 단계 제거 / 최종 정적 QA PASS / 최종 Chromium 다국어·모바일 헤더 QA PASS / 실제 Cloudflare 최신 배포 확인 대기**
+**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 해외 언어 클라이언트 로딩 단계 제거 / 최종 정적 QA PASS / 최종 Chromium 다국어·모바일 헤더 QA PASS / 모바일 공개화면 최신 배포 확인**
 
 - 운영 주소: https://random-ppobgi.pages.dev/
 - 배포 구조: Cloudflare Pages
@@ -79,37 +79,17 @@
 
 ### 최종 정적 QA — PASS
 
-최신 `i18n-smoke`에서 다음을 검사한다.
-
-- JavaScript syntax
-- 16개 해외 locale catalog 존재
-- 16개 language route fallback 존재
-- 해외 언어 production 경로가 `context.env.ASSETS.fetch` 기반 직접 edge-render 구조인지
-- production middleware가 `full-app-loader.js`를 사용하지 않는지
-- 단일 활성 localization runtime path
-- 정보페이지 localization runtime이 `info-i18n.js` 하나뿐인지
-- 과거 중복 정보페이지 런타임이 다시 생기지 않았는지
-- 8개 게임 + 5개 게임 도구 localization key
-- sitemap 17개 언어 URL
-- canonical / hreflang / x-default / description 검색 신호
+최신 `i18n-smoke`에서 JavaScript syntax, 16개 locale/route, edge-render 구조, 단일 localization runtime, 정보페이지 runtime 단일화, 8개 게임 + 5개 게임 도구 localization key, sitemap 17개 URL, canonical/hreflang/x-default/description을 검사하고 PASS했다.
 
 ### 최종 Chromium 브라우저 QA — PASS
 
-최종 강화 검수의 기준 run은 `33628544310`이며 static-smoke와 browser-smoke 모두 PASS했다.
+최종 강화 검수에서 16개 해외 언어 초기 화면, 언어 선택기 1개, 지구 아이콘 1개, 현재 언어 선택값, 8개 게임, 5개 도구, 번호·이름 모드, 한글 잔존, 접근성 속성, 아랍어 RTL을 전수검사했다. 영어/일본어/스페인어/중국어/포르투갈어/아랍어는 실제 룰렛 실행·결과·게임도구 전환을 390px와 360px에서 검사했고, 모바일 가로 overflow·헤더 한 줄 정렬·로고/액션 겹침·수직 정렬·중복 선택기 재발까지 PASS했다. 한국어도 390px와 360px에서 동일한 모바일/헤더 검사를 PASS했다.
 
-- 16개 해외 언어 초기 화면 전수검사
-- 언어 선택기 정확히 1개 / 지구 아이콘 정확히 1개 / 현재 언어 선택값 일치
-- 8개 뽑기 게임 / 게임도구 5종 / 번호·이름 모드 존재
-- 해외 본문 한국어 잔존 검사
-- `aria-label/title/placeholder` 한국어 잔존 검사
-- 아랍어 RTL 검사
-- 영어/일본어/스페인어/중국어/포르투갈어/아랍어에서 실제 룰렛 실행·결과·게임도구 전환
-- 위 6개 해외 언어를 390px와 360px 모바일 폭에서 각각 검사
-- 모바일 가로 overflow, 헤더 한 줄 정렬, 로고/액션 겹침, 컨트롤 수직 정렬 검사
-- 상호작용 후 언어 선택기 중복 재발 검사
-- 한국어도 390px와 360px에서 공통 선택기/8개 게임/5개 도구/헤더 정렬/가로 overflow 검사
+### 공개 모바일 확인 — PASS
 
-최종 중복 파일 제거 후에도 같은 CI를 다시 실행해 최신 HEAD가 PASS해야 최종 코드 QA 완료로 유지한다.
+- 2026-09-02 황제가 실제 모바일 공개 URL에서 최신 화면이 정상 반영되고 이동이 잘 되는 것을 확인했다.
+- 따라서 모바일 기준 최신 Cloudflare 배포와 헤더/언어 이동은 실제 사용자 확인까지 완료했다.
+- PC 공개화면 확인은 별도 보조 확인으로 남아 있으며, 모바일 확인 결과를 PC까지 자동 확장해 단정하지 않는다.
 
 ## 운영 데이터
 
@@ -127,16 +107,17 @@
 - 구현 완료와 QA 통과를 구분한다.
 - QA 통과와 실제 공개 배포 확인을 구분한다.
 - 공개 배포와 실제 시장 성공을 구분한다.
-- 내부 QA 통과는 외부 사용성·검색성·수익성을 증명하지 않는다.
+- 내부 QA 통과은 외부 사용성·검색성·수익성을 증명하지 않는다.
 
-## 현재 병목
+## 현재 Gate
 
-- 저장소 코드는 최종 감사에서 중복·레거시 정리까지 수행했다.
-- 최신 HEAD CI PASS를 마지막으로 회수한다.
-- 현재 ChatGPT 실행환경에서는 `random-ppobgi.pages.dev` 공개 URL을 독립적으로 열지 못해 **Cloudflare Pages가 최신 main을 실제 제공하고 있는지는 아직 독립 검증하지 못했다.**
-- 따라서 공개화면 확인 전 Gate는 `IMPLEMENTED / QA_PASS / LIVE_DEPLOY_UNVERIFIED`다.
-- 외부 사용 표본이 아직 작아 제품 개선·확대 판단 근거가 부족하다.
-- sitemap의 검색엔진 재처리 결과는 별도 검색 점검에서 확인한다.
+- 코드 구현: PASS
+- 정적/브라우저 QA: PASS
+- 모바일 공개 배포 확인: PASS
+- PC 공개화면 확인: 미확인
+- 시장 검증: 표본 부족
+
+현재 기술 Gate는 `IMPLEMENTED / QA_PASS / MOBILE_LIVE_VERIFIED`다. PC 공개화면까지 확인되면 공개 배포 검증을 더 강하게 `LIVE_DEPLOY_VERIFIED`로 승격할 수 있다.
 
 ## 운영 원칙
 
@@ -147,8 +128,5 @@
 
 ## 다음 행동
 
-1. 최종 정리 HEAD의 GitHub Actions static/browser PASS 회수
-2. Cloudflare Pages가 최신 main을 실제 배포했는지 공개 화면에서 확인
-3. 공개 주소에서 해외 언어 진입 시 `Loading full Random Picker…`가 보이지 않고 모바일 헤더가 한 줄인지 확인
-4. 공개 배포 QA가 통과하면 `LIVE_DEPLOY_VERIFIED`로 승격
-5. 이후 Search Console 및 실제 외부 사용 데이터를 회수해 검색·사용 성과를 별도 판단
+1. PC 공개화면에서 한 번 최종 확인
+2. 이후 Search Console 및 실제 외부 사용 데이터를 회수해 검색·사용 성과를 별도 판단
