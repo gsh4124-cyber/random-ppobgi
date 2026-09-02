@@ -1,11 +1,11 @@
 # PROJECT STATUS — random-ppobgi
 
-- 마지막 갱신: 2026-09-01
+- 마지막 갱신: 2026-09-02
 - 저장소 역할: 랜덤뽑기 웹서비스의 코드·배포·기술상태 원본
 - 상위 상태 원본: 황제 Vault `자동 사업운영/바이브코딩/_INDEX.md`
 - ChatGPT 통합 관제: `자동 사업운영`
 - ChatGPT 실행창: `랜덤뽑기 Work`
-- 표준 로컬 경로: `C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/random-ppobgi`
+- 표준 로컬 경로: `C:/Users/gsh41/Desktop/황제/자동 사업운영/바이브코딩/페이지형/random-ppobgi`
 
 ## 현재 상태
 
@@ -21,7 +21,7 @@
 
 - 핵심 이벤트: `game_start`, `game_complete`, `reroll`, `exclude_reroll`
 - Production D1: `random-ppobgi-analytics`
-- Vault snapshot: `자동 사업운영/바이브코딩/랜덤뽑기_analytics_latest.json`
+- Vault snapshot: `자동 사업운영/바이브코딩/페이지형/랜덤뽑기_analytics_latest.json`
 - workflow: `hwangje-vault/.github/workflows/random-picker-analytics-snapshot.yml`
 - workflow 기준 매일 00:20 KST에 최근 14일 aggregate를 갱신하도록 복구됨
 - 이름·당첨내용·입력문구·사용자 ID·세션 ID·광고 ID·쿠키는 수집하지 않음
