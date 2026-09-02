@@ -56,8 +56,9 @@ function assertMobileHeader(m,lang,width){
   const controls=[m['#soundToggle'],m['#resetBtn'],m['#languageSwitch']];
   assert(Math.max(...controls.map(x=>x.centerY))-Math.min(...controls.map(x=>x.centerY))<=2,`${lang}@${width}: header controls are not vertically aligned`);
   assert(Math.abs(m['.logo'].centerY-m['.header-actions'].centerY)<=2,`${lang}@${width}: logo and actions are not on the same line`);
-  assert(m['.logo'].right <= m['.header-actions'].left+1,`${lang}@${width}: logo overlaps header actions`);
-  assert(m['.header-actions'].right <= width+1,`${lang}@${width}: header actions overflow viewport`);
+  const separated=m['.logo'].right<=m['.header-actions'].left+1 || m['.header-actions'].right<=m['.logo'].left+1;
+  assert(separated,`${lang}@${width}: logo overlaps header actions`);
+  assert(m['.header-actions'].left>=-1 && m['.header-actions'].right<=width+1,`${lang}@${width}: header actions overflow viewport`);
   assert(controls.every(x=>x.top>=m['header'].top-1 && x.bottom<=m['header'].bottom+1),`${lang}@${width}: a header control escapes header row`);
 }
 
