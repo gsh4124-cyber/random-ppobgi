@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 
-// Latest-head rerun marker: residual Korean fixes applied before this QA run.
+// Final-head QA trigger: visible multilingual residual fixes are applied.
 const base = process.env.I18N_TEST_BASE || 'http://127.0.0.1:4173';
 const priority = ['en','ja','es','zh','pt','ar'];
 const allForeign = ['en','ja','es','zh','fr','de','pt','id','hi','pl','it','nl','tr','vi','th','ar'];
