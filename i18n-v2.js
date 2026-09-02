@@ -16,7 +16,7 @@
     qa('.method').forEach(b=>{const e=q('.name',b);if(e)e.textContent=pack.methods[b.dataset.method]||b.dataset.method;});
     set('#numberTab',pack.number);set('#nameTab',pack.name);
     const bombLabel=q('#bombSettings .label span');if(bombLabel)bombLabel.textContent=pack.bombTime;
-    set('#bombModeRandom',pack.random);set('#bombModeFixed',pack.setTime);
+    set('#bombModeRandom',pack.random);set('#bombModeFixed',pack.setTime);const bombUnit=q('#bombSeconds')?.parentElement?.querySelector('.unit');if(bombUnit)bombUnit.textContent='s';
     const bombNote=q('#bombFixedWrap .result-note');if(bombNote)bombNote.textContent=pack.bombStep;
     const totalLabel=q('#totalField .label span');if(totalLabel)totalLabel.textContent=pack.totalPeople;
     const totalUnit=q('#totalPeople')?.parentElement?.querySelector('.unit');if(totalUnit)totalUnit.textContent=pack.peopleUnit;
@@ -26,7 +26,7 @@
     set('#pickLabel',pack.pickCount);set('#pickUnit',pack.peopleUnit);
     const resultLabel=q('#resultSettings .label-text');if(resultLabel)resultLabel.textContent=pack.result;
     const opts=qa('#resultMode option');if(opts[0])opts[0].textContent=pack.winner;if(opts[1])opts[1].textContent=pack.rank;if(opts[2])opts[2].textContent=pack.custom;
-    attr('#resultMode','aria-label',pack.result);attr('#customResults','placeholder',pack.customPlaceholder);set('#customResultNote',pack.customNote);
+    attr('#resultMode','aria-label',pack.result);attr('#customResults','placeholder',pack.customPlaceholder);set('label[for="customResults"]',pack.custom);set('#customResultNote',pack.customNote);
     set('#pickBtn',pack.start);set('#remainingCandidates .remaining-head span',pack.remaining);set('#showAllBtn',pack.showNow);set('#resultKicker',pack.resultTitle);set('#repickBtn',pack.rerollAll);set('#excludeBtn',pack.rerollExclude);
     attr('#soundToggle','aria-label',pack.dynamic.soundOn);attr('#soundToggle','title',pack.dynamic.soundOn);
     attr('#numberTab','aria-label',pack.number);attr('#nameTab','aria-label',pack.name);

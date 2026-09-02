@@ -28,6 +28,17 @@ async function koreanAttrs(page) {
     return out.slice(0,16);
   });
 }
+async function visibleTextWithoutLanguageSwitch(page) {
+  return page.evaluate(() => {
+    const el=document.getElementById('languageSwitch');
+    const previous=el?.style.display ?? '';
+    if(el) el.style.display='none';
+    const text=document.body.innerText;
+    if(el) el.style.display=previous;
+    return text;
+  });
+}
+
 async function waitReady(page) {
   await page.waitForFunction(() => window.__RANDOM_PICKER_I18N_READY__ === true, null, {timeout:10000});
   await page.locator('#languageSwitch').waitFor({state:'attached',timeout:5000});
@@ -45,7 +56,7 @@ for (const lang of allForeign) {
   assert(await page.locator('.method').count() === 8, `${lang}: expected 8 picker games`);
   assert(await page.locator('.tool-tab').count() === 5, `${lang}: expected 5 game tools`);
   assert(await page.locator('#numberTab').count() === 1 && await page.locator('#nameTab').count() === 1, `${lang}: number/name modes missing`);
-  const visibleText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });
+  const visibleText = await visibleTextWithoutLanguageSwitch(page);
   assert(!korean.test(visibleText), `${lang}: Korean remains in initial visible UI: ${koreanLines(visibleText)}`);
   const attrs=await koreanAttrs(page);
   assert(attrs.length===0, `${lang}: Korean remains in accessibility attributes: ${attrs.join(' | ')}`);
@@ -71,7 +82,7 @@ for (const lang of priority) {
     await show.click();
     await page.waitForTimeout(150);
   }
-  const dynamicText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });
+  const dynamicText = await visibleTextWithoutLanguageSwitch(page);
   assert(!korean.test(dynamicText), `${lang}: Korean remains after picker execution: ${koreanLines(dynamicText)}`);
   const attrs=await koreanAttrs(page);
   assert(attrs.length===0, `${lang}: Korean remains in dynamic accessibility attributes: ${attrs.join(' | ')}`);
@@ -84,7 +95,7 @@ for (const lang of priority) {
   await tools.click();
   await page.waitForTimeout(80);
   assert(await page.locator('.tool-tab').count() === 5, `${lang}: tools missing after switching tab`);
-  const toolText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });
+  const toolText = await visibleTextWithoutLanguageSwitch(page);
   assert(!korean.test(toolText), `${lang}: Korean remains in game tools: ${koreanLines(toolText)}`);
   await page.close();
 }
