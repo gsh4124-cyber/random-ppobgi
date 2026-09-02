@@ -12,13 +12,32 @@ const problems = [];
 function assert(ok, message) {
   if (!ok) { failed = true; problems.push(message); }
 }
+function koreanLines(text) {
+  return text.split(/\n+/).map(s=>s.trim()).filter(s=>korean.test(s)).slice(0,12).join(' | ');
+}
+async function koreanAttrs(page) {
+  return page.evaluate(() => {
+    const re=/[가-힣]/; const out=[];
+    for (const el of document.querySelectorAll('[aria-label],[title],[placeholder]')) {
+      for (const key of ['aria-label','title','placeholder']) {
+        const value=el.getAttribute(key);
+        if (value && re.test(value)) out.push(`${el.tagName.toLowerCase()}#${el.id||''}.${el.className||''} ${key}=${value}`);
+      }
+    }
+    return out.slice(0,16);
+  });
+}
+async function waitReady(page) {
+  await page.waitForFunction(() => window.__RANDOM_PICKER_I18N_READY__ === true, null, {timeout:10000});
+  await page.locator('#languageSwitch').waitFor({state:'attached',timeout:5000});
+}
 
 for (const lang of allForeign) {
   const page = await browser.newPage({viewport:{width:1280,height:900}});
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
   await page.goto(`${base}/${lang}/`, {waitUntil:'networkidle'});
-  await page.waitForFunction(() => window.__RANDOM_PICKER_I18N_READY__ === true, null, {timeout:10000});
+  await waitReady(page);
   assert(await page.locator('#languageSwitch').count() === 1, `${lang}: language selector count is not 1`);
   assert(await page.locator('#languageSwitch .globe').count() === 1, `${lang}: globe count is not 1`);
   assert(await page.locator('#languageSelect').inputValue() === lang, `${lang}: selector does not show current language`);
@@ -26,7 +45,9 @@ for (const lang of allForeign) {
   assert(await page.locator('.tool-tab').count() === 5, `${lang}: expected 5 game tools`);
   assert(await page.locator('#numberTab').count() === 1 && await page.locator('#nameTab').count() === 1, `${lang}: number/name modes missing`);
   const visibleText = await page.locator('body').innerText();
-  assert(!korean.test(visibleText), `${lang}: Korean remains in initial visible UI`);
+  assert(!korean.test(visibleText), `${lang}: Korean remains in initial visible UI: ${koreanLines(visibleText)}`);
+  const attrs=await koreanAttrs(page);
+  assert(attrs.length===0, `${lang}: Korean remains in accessibility attributes: ${attrs.join(' | ')}`);
   assert(errors.length === 0, `${lang}: page errors: ${errors.join(' | ')}`);
   if (lang === 'ar') assert(await page.locator('html').getAttribute('dir') === 'rtl', 'ar: html dir is not rtl');
   await page.close();
@@ -37,7 +58,7 @@ for (const lang of priority) {
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
   await page.goto(`${base}/${lang}/`, {waitUntil:'networkidle'});
-  await page.waitForFunction(() => window.__RANDOM_PICKER_I18N_READY__ === true, null, {timeout:10000});
+  await waitReady(page);
 
   const wheel = page.locator('.method[data-method="wheel"]');
   if (await wheel.count()) await wheel.click();
@@ -50,7 +71,9 @@ for (const lang of priority) {
     await page.waitForTimeout(150);
   }
   const dynamicText = await page.locator('body').innerText();
-  assert(!korean.test(dynamicText), `${lang}: Korean remains after picker execution`);
+  assert(!korean.test(dynamicText), `${lang}: Korean remains after picker execution: ${koreanLines(dynamicText)}`);
+  const attrs=await koreanAttrs(page);
+  assert(attrs.length===0, `${lang}: Korean remains in dynamic accessibility attributes: ${attrs.join(' | ')}`);
   assert(errors.length === 0, `${lang}: page errors after execution: ${errors.join(' | ')}`);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   assert(overflow <= 2, `${lang}: mobile horizontal overflow ${overflow}px`);
@@ -61,7 +84,25 @@ for (const lang of priority) {
   await page.waitForTimeout(80);
   assert(await page.locator('.tool-tab').count() === 5, `${lang}: tools missing after switching tab`);
   const toolText = await page.locator('body').innerText();
-  assert(!korean.test(toolText), `${lang}: Korean remains in game tools`);
+  assert(!korean.test(toolText), `${lang}: Korean remains in game tools: ${koreanLines(toolText)}`);
+  await page.close();
+}
+
+// Korean full app also gets the same single shared language selector. The local
+// static server does not run Cloudflare middleware, so load the selector directly.
+{
+  const page=await browser.newPage({viewport:{width:390,height:844}});
+  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+  await page.goto(`${base}/`,{waitUntil:'networkidle'});
+  await page.addScriptTag({url:`${base}/language-switch.js`});
+  await page.locator('#languageSwitch').waitFor({state:'attached',timeout:5000});
+  assert(await page.locator('#languageSwitch').count()===1,'ko: language selector count is not 1');
+  assert(await page.locator('#languageSelect').inputValue()==='ko','ko: selector does not show Korean');
+  assert(await page.locator('.method').count()===8,'ko: expected 8 picker games');
+  assert(await page.locator('.tool-tab').count()===5,'ko: expected 5 game tools');
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+  assert(overflow<=2,`ko: mobile horizontal overflow ${overflow}px`);
+  assert(errors.length===0,`ko: page errors: ${errors.join(' | ')}`);
   await page.close();
 }
 
@@ -70,4 +111,4 @@ if (failed) {
   console.error(problems.join('\n'));
   process.exit(1);
 }
-console.log('Multilingual browser smoke passed for 16 foreign languages; interactive/mobile pass for en, ja, es, zh, pt, ar.');
+console.log('Browser smoke passed: 16 foreign languages scanned, en/ja/es/zh/pt/ar interactive-mobile checked, and Korean shared-selector/mobile checked.');
