@@ -16,51 +16,29 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Patch final visible residuals and browser QA
+      - name: Patch dynamic game titles
         shell: bash
         run: |
           python <<'PY'
           from pathlib import Path
-
           p=Path('i18n-v2.js')
           s=p.read_text(encoding='utf-8')
-
-          anchor="set('#bombModeRandom',pack.random);set('#bombModeFixed',pack.setTime);"
-          replacement="set('#bombModeRandom',pack.random);set('#bombModeFixed',pack.setTime);const bombUnit=q('#bombSeconds')?.parentElement?.querySelector('.unit');if(bombUnit)bombUnit.textContent='s';"
-          if anchor not in s: raise SystemExit('bomb unit anchor missing')
-          if "bombUnit.textContent='s'" not in s: s=s.replace(anchor,replacement,1)
-
-          anchor2="attr('#resultMode','aria-label',pack.result);attr('#customResults','placeholder',pack.customPlaceholder);set('#customResultNote',pack.customNote);"
-          replacement2="attr('#resultMode','aria-label',pack.result);attr('#customResults','placeholder',pack.customPlaceholder);set('label[for=\"customResults\"]',pack.custom);set('#customResultNote',pack.customNote);"
-          if anchor2 not in s: raise SystemExit('custom result label anchor missing')
-          if "label[for=\"customResults\"]',pack.custom" not in s: s=s.replace(anchor2,replacement2,1)
-
+          anchor="""    let x=s;\n    x=x.replace(/(\\d+)명\\s*도착/g,(_,n)=>`${compactCount(n)} ${pack.dynamic.arrived}`);"""
+          replacement="""    let x=s;\n    const methodWords={사다리:pack.methods.ladder,룰렛:pack.methods.wheel,제비:pack.methods.lot,핀볼:pack.methods.pinball,경주:pack.methods.race,캡슐:pack.methods.capsule,슬롯:pack.methods.slot,폭탄:pack.methods.bomb};\n    for(const [ko,value] of Object.entries(methodWords))x=x.split(ko).join(value);\n    x=x.replace(/(\\d+)명\\s*도착/g,(_,n)=>`${compactCount(n)} ${pack.dynamic.arrived}`);"""
+          if anchor not in s: raise SystemExit('translation anchor missing')
+          if 'const methodWords=' not in s: s=s.replace(anchor,replacement,1)
           p.write_text(s,encoding='utf-8')
-
-          t=Path('tests/i18n-browser-smoke.mjs')
-          x=t.read_text(encoding='utf-8')
-          helper="""async function visibleTextWithoutLanguageSwitch(page) {\n  return page.evaluate(() => {\n    const el=document.getElementById('languageSwitch');\n    const previous=el?.style.display ?? '';\n    if(el) el.style.display='none';\n    const text=document.body.innerText;\n    if(el) el.style.display=previous;\n    return text;\n  });\n}\n"""
-          if 'async function visibleTextWithoutLanguageSwitch' not in x:
-            marker='async function waitReady(page) {'
-            if marker not in x: raise SystemExit('waitReady marker missing')
-            x=x.replace(marker,helper+'\n'+marker,1)
-
-          import re
-          x=re.sub(r"await page\.evaluate\(\(\) => \{ const clone=document\.body\.cloneNode\(true\); clone\.querySelector\('#languageSwitch'\)\?\.remove\(\); return clone\.innerText; \}\)","await visibleTextWithoutLanguageSwitch(page)",x)
-          t.write_text(x,encoding='utf-8')
           PY
 
       - name: Syntax check
-        run: |
-          node --check i18n-v2.js
-          node --check tests/i18n-browser-smoke.mjs
+        run: node --check i18n-v2.js
 
       - name: Commit fixes
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add i18n-v2.js tests/i18n-browser-smoke.mjs
+          git add i18n-v2.js
           if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
-          git commit -m 'Finish visible multilingual localization fixes'
+          git commit -m 'Localize dynamic picker game titles'
           git push
