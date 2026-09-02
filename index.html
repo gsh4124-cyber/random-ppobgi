@@ -973,32 +973,9 @@
 @keyframes yutPhysicsAlt{0%{transform:translate(82px,45px) rotate(35deg) scale(.8)}36%{transform:translate(19px,-60px) rotate(-150deg) scale(1.03)}60%{transform:translate(-7px,-4px) rotate(-285deg)}74%{transform:translate(4px,-20px) rotate(-345deg)}87%{transform:translate(-2px,1px) rotate(-397deg)}95%{transform:translate(1px,-5px) rotate(-408deg)}100%{transform:none}}
 @media(max-width:430px){.die{width:54px;height:54px}.yut-stick{width:29px!important;height:92px!important}}
 
-/* v60 drop-and-throw motion */
-.rolling .die{animation:diceDrop 1.02s cubic-bezier(.18,.72,.2,1) both!important}
-.rolling .die:nth-child(2){animation-name:diceDrop2!important;animation-delay:.04s!important}
-.rolling .die:nth-child(3){animation-name:diceDrop3!important;animation-delay:.08s!important}
-.rolling .die:nth-child(4){animation-name:diceDrop2!important;animation-delay:.02s!important}
-.rolling .die:nth-child(5){animation-name:diceDrop3!important;animation-delay:.06s!important}
-.rolling .die:nth-child(6){animation-name:diceDrop!important;animation-delay:.1s!important}
-@keyframes diceDrop{0%{transform:translate(-9px,-150px) rotate3d(1,1,.4,-210deg) scale(.72);opacity:.2}42%{transform:translate(5px,7px) rotate3d(1,.6,.3,35deg) scale(1.04);opacity:1}58%{transform:translate(-3px,-29px) rotate3d(.5,1,.2,-18deg) scale(.98)}73%{transform:translate(2px,3px) rotate(7deg)}84%{transform:translate(-1px,-11px) rotate(-4deg)}93%{transform:translate(0,1px) rotate(1deg)}100%{transform:none}}
-@keyframes diceDrop2{0%{transform:translate(7px,-165px) rotate3d(.6,1,.5,240deg) scale(.7);opacity:.15}44%{transform:translate(-6px,8px) rotate3d(1,.5,.2,-30deg) scale(1.05);opacity:1}60%{transform:translate(4px,-25px) rotate3d(.4,1,.3,16deg) scale(.98)}75%{transform:translate(-2px,3px) rotate(-6deg)}86%{transform:translate(1px,-9px) rotate(3deg)}94%{transform:translate(0,1px)}100%{transform:none}}
-@keyframes diceDrop3{0%{transform:translate(2px,-142px) rotate3d(1,.4,1,-260deg) scale(.74);opacity:.2}40%{transform:translate(3px,6px) rotate3d(.7,1,.2,28deg) scale(1.03);opacity:1}57%{transform:translate(-4px,-32px) rotate3d(1,.4,.2,-15deg) scale(.99)}72%{transform:translate(2px,3px) rotate(5deg)}84%{transform:translate(-1px,-12px) rotate(-3deg)}94%{transform:translate(0,1px)}100%{transform:none}}
-.rolling .yut-stick{animation:yutToss 1.08s cubic-bezier(.2,.7,.2,1) both!important}
-.rolling .yut-stick:nth-child(2){animation-name:yutToss2!important;animation-delay:.035s!important}
-.rolling .yut-stick:nth-child(3){animation-name:yutToss3!important;animation-delay:.07s!important}
-.rolling .yut-stick:nth-child(4){animation-name:yutToss4!important;animation-delay:.105s!important}
-@keyframes yutToss{0%{transform:translate(-18px,105px) rotate(-18deg) scale(.78);opacity:.25}35%{transform:translate(-30px,-73px) rotate(118deg) scale(1.02);opacity:1}66%{transform:translate(-19px,-19px) rotate(203deg)}79%{transform:translate(-24px,4px) rotate(218deg)}89%{transform:translate(-22px,-10px) rotate(211deg)}100%{transform:translate(-22px,0) rotate(214deg)}}
-@keyframes yutToss2{0%{transform:translate(-6px,110px) rotate(12deg) scale(.8);opacity:.2}38%{transform:translate(-10px,-82px) rotate(-105deg) scale(1.03);opacity:1}67%{transform:translate(-7px,-17px) rotate(-184deg)}80%{transform:translate(-8px,4px) rotate(-197deg)}90%{transform:translate(-7px,-9px) rotate(-191deg)}100%{transform:translate(-7px,0) rotate(-194deg)}}
-@keyframes yutToss3{0%{transform:translate(7px,108px) rotate(-10deg) scale(.79);opacity:.2}36%{transform:translate(13px,-78px) rotate(130deg) scale(1.02);opacity:1}65%{transform:translate(9px,-20px) rotate(212deg)}79%{transform:translate(10px,4px) rotate(226deg)}90%{transform:translate(9px,-10px) rotate(219deg)}100%{transform:translate(9px,0) rotate(222deg)}}
-@keyframes yutToss4{0%{transform:translate(18px,112px) rotate(16deg) scale(.78);opacity:.2}39%{transform:translate(30px,-70px) rotate(-120deg) scale(1.03);opacity:1}68%{transform:translate(23px,-16px) rotate(-198deg)}81%{transform:translate(25px,4px) rotate(-211deg)}91%{transform:translate(24px,-8px) rotate(-205deg)}100%{transform:translate(24px,0) rotate(-208deg)}}
 
-/* v61 scattered yut landing */
-#yutResult{min-height:190px;padding:28px 30px 18px;align-content:center}
-.yut-final .yut-stick{transform:translate(var(--land-x),var(--land-y)) rotate(var(--land-r))}
-.yut-final.landed .yut-stick{animation:yutFinalSettle .34s cubic-bezier(.2,.75,.25,1) both!important}
-@keyframes yutFinalSettle{0%{transform:translate(var(--land-x),calc(var(--land-y) - 22px)) rotate(calc(var(--land-r) - 9deg))}58%{transform:translate(var(--land-x),calc(var(--land-y) + 4px)) rotate(calc(var(--land-r) + 2deg))}100%{transform:translate(var(--land-x),var(--land-y)) rotate(var(--land-r))}}
-.yut-final .yut-name{margin-top:14px}
-@media(max-width:430px){#yutResult{min-height:175px;padding-inline:15px}.yut-final .yut-stick{margin-inline:1px}}
+/* v62 visible game-tool guide */
+.game-tool-note{margin:16px 0 6px;padding:15px 17px;border:1px solid var(--line);border-radius:16px;background:var(--soft2)}.game-tool-note strong{display:block;margin-bottom:6px;font-size:15px}.game-tool-note p{margin:0;color:#5f584e;font-size:14px;line-height:1.65}
 </style>
 </head>
 <body>
@@ -1045,6 +1022,7 @@
 <section class="service-info" aria-labelledby="serviceInfoTitle">
   <h2 id="serviceInfoTitle">뽑기와 게임에 바로 쓰는 랜덤 도구</h2>
   <p>랜덤뽑기는 모임, 수업, 회식, 보드게임처럼 무작위 선택이 필요한 순간에 바로 쓰는 무료 웹 도구입니다. 사다리·룰렛·제비 등 8가지 뽑기 게임으로 당첨자를 정하고, 게임 도구에서는 주사위와 윷을 던지거나 동전을 뒤집고 참가 순서와 팀을 간편하게 정할 수 있습니다. 회원가입 없이 모바일과 PC에서 바로 사용할 수 있습니다.</p>
+  <div class="game-tool-note"><strong>새로운 게임 도구도 이용해 보세요</strong><p>주사위는 최대 6개까지 한 번에 굴릴 수 있으며 윷놀이와 동전 던기도 바로 실행할 수 있습니다. 참가자 이름을 입력하면 순서를 무작위로 정하거나 원하는 수의 팀으로 공평하게 나눌 수도 있습니다.</p></div>
   <details>
     <summary>8가지 방식은 어떻게 다른가요?</summary>
     <ul><li><strong>사다리</strong>: 경로를 따라 결과를 확인합니다.</li><li><strong>룰렛</strong>: 한 명 또는 한 항목을 돌려 뽑습니다.</li><li><strong>제비</strong>: 여러 제비를 직접 열어 결과를 확인합니다.</li><li><strong>핀볼</strong>: 가운데 홀에 가장 늦게 빠진 공을 당첨자로 뽑습니다.</li><li><strong>경주</strong>: 가장 먼저 결승선에 도착한 참가자를 당첨자로 뽑습니다.</li><li><strong>캡슐</strong>: 캡슐 한 개를 뽑아 결과를 확인합니다.</li><li><strong>슬롯</strong>: 슬롯을 멈춰 한 명을 선택합니다.</li><li><strong>폭탄</strong>: 정해진 사람 대신 기기를 돌려가며 폭탄이 터지는 순간을 기다립니다.</li></ul>
@@ -1399,7 +1377,7 @@ document.querySelectorAll('[data-target]').forEach(btn=>btn.addEventListener('cl
   const namesOf=id=>{const a=document.getElementById(id).value.split(/[\n,]+/).map(v=>v.trim()).filter(Boolean);return a.length?a:Array.from({length:8},(_,i)=>String(i+1)+'번')};
   root.querySelectorAll('.tool-tab').forEach(btn=>btn.addEventListener('click',()=>{root.querySelectorAll('.tool-tab').forEach(b=>{const on=b===btn;b.classList.toggle('active',on);b.setAttribute('aria-selected',on)});root.querySelectorAll('.tool-panel').forEach(p=>p.hidden=p.dataset.panel!==btn.dataset.tool)}));
   document.getElementById('rollDice').addEventListener('click',()=>{const n=+document.getElementById('diceCount').value,out=document.getElementById('diceResult');const preview=Array.from({length:n},()=>rand(6)+1);out.className='tool-result rolling';out.innerHTML=preview.map(x=>'<span class="die" data-n="'+x+'" aria-label="'+x+'"></span>').join('');setTimeout(()=>{const v=Array.from({length:n},()=>rand(6)+1);out.className='tool-result landed';out.innerHTML=v.map(x=>'<span class="die" data-n="'+x+'" aria-label="'+x+'"></span>').join('')+(n>1?'<div class="tool-total">합계 '+v.reduce((a,b)=>a+b,0)+'</div>':'');setTimeout(()=>out.classList.remove('landed'),260)},900)});
-  document.getElementById('throwYut').addEventListener('click',()=>{const out=document.getElementById('yutResult'),preview=Array.from({length:4},()=>rand(2));out.className='tool-result rolling';out.innerHTML=preview.map(v=>'<i class="yut-stick '+(v?'back':'')+'"></i>').join('');setTimeout(()=>{const backs=Array.from({length:4},()=>rand(2)),flat=backs.reduce((a,b)=>a+b,0),name=['모','도','개','걸','윷'][flat],lands=[[-19,5,-17],[-7,-4,10],[8,7,-8],[20,0,19]];out.className='tool-result landed yut-final';out.innerHTML=backs.map((v,i)=>'<i class="yut-stick '+(v?'back':'')+'" style="--land-x:'+lands[i][0]+'px;--land-y:'+lands[i][1]+'px;--land-r:'+lands[i][2]+'deg"></i>').join('')+'<strong class="yut-name">'+name+'</strong>';setTimeout(()=>out.classList.remove('landed'),360)},980)});
+  document.getElementById('throwYut').addEventListener('click',()=>{const out=document.getElementById('yutResult'),preview=Array.from({length:4},()=>rand(2));out.className='tool-result rolling';out.innerHTML=preview.map(v=>'<i class="yut-stick '+(v?'back':'')+'"></i>').join('');setTimeout(()=>{const backs=Array.from({length:4},()=>rand(2)),flat=backs.reduce((a,b)=>a+b,0),name=['모','도','개','걸','윷'][flat];out.className='tool-result landed';out.innerHTML=backs.map(v=>'<i class="yut-stick '+(v?'back':'')+'"></i>').join('')+'<strong class="yut-name">'+name+'</strong>';setTimeout(()=>out.classList.remove('landed'),280)},980)});
   document.getElementById('flipCoin').addEventListener('click',()=>{const out=document.getElementById('coinResult');out.className='tool-result rolling';out.innerHTML='<div class="coin-face">●</div>';setTimeout(()=>{out.className='tool-result landed';out.innerHTML='<div class="coin-face">'+(rand(2)?'앞면':'뒷면')+'</div>';setTimeout(()=>out.classList.remove('landed'),280)},1020)});
   document.getElementById('makeOrder').addEventListener('click',()=>{const a=shuffle(namesOf('orderNames'));document.getElementById('orderResult').innerHTML='<div class="order-list">'+a.map((v,i)=>'<div class="order-item"><b>'+(i+1)+'</b>'+v.replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]))+'</div>').join('')+'</div>'});
   document.getElementById('makeTeams').addEventListener('click',()=>{const a=shuffle(namesOf('teamNames')),n=Math.min(+document.getElementById('teamCount').value,a.length),teams=Array.from({length:n},()=>[]);a.forEach((v,i)=>teams[i%n].push(v));const esc=v=>v.replace(/[&<>"]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s]));document.getElementById('teamResult').innerHTML='<div class="team-grid">'+teams.map((t,i)=>'<div class="team-box"><strong>'+(i+1)+'팀</strong><div>'+t.map(esc).join('<br>')+'</div></div>').join('')+'</div>'});
