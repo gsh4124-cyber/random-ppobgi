@@ -56,6 +56,13 @@ jobs:
           for(const s of forbidden) if(loader.includes(s)||middleware.includes(s)) throw new Error(`legacy runtime still referenced: ${s}`);
           if(!middleware.includes('/language-switch.js')) throw new Error('middleware missing shared selector');
           NODE
+      - name: One active info localization runtime
+        run: |
+          set -eu
+          test -f info-i18n.js
+          grep -q '/info-i18n.js' functions/_middleware.js
+          test ! -e info-locales.js
+          test ! -e info-page.js
       - name: Core feature localization keys exist
         run: |
           set -eu
