@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 최종 정적·Chromium 다국어 QA PASS / 모바일 공개화면 확인 / 글로벌 검색 유통 자동화 ACTIVE / 검색생태계별 Gate 분리 완료 / 수동 검색엔진 등록은 중앙 운영 이관**
+**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 최종 정적·Chromium 다국어 QA PASS / 모바일·PC 공개화면 사용자 확인 PASS / 글로벌 검색 유통 자동화 ACTIVE / 검색생태계별 Gate 분리 완료 / 수동 검색엔진 등록은 중앙 운영 이관 / 현 운영본 배포 승인**
 
 - 운영 주소: https://random-ppobgi.pages.dev/
 - 배포 구조: Cloudflare Pages
@@ -89,7 +89,11 @@
 
 - 2026-09-02 황제가 실제 모바일 공개 URL에서 최신 화면이 정상 반영되고 이동이 잘 되는 것을 확인했다.
 - 모바일 기준 최신 Cloudflare 배포와 헤더/언어 이동은 실제 사용자 확인까지 완료했다.
-- PC 공개화면 확인은 별도 보조 확인으로 남아 있다.
+
+### 공개 PC 확인 — PASS
+
+- 2026-09-03 황제가 실제 공개 URL에 직접 들어가 화면을 확인했고, 특별한 이상이 보이지 않아 현재 운영본을 배포해도 된다고 승인했다.
+- 이 확인은 모든 언어·모든 기능의 수동 전수검사를 뜻하지 않는다. 기존 자동 QA PASS와 실제 공개화면 사용자 확인을 결합해 배포 승인 Gate를 닫은 것으로 기록한다.
 
 ### 번역 자연스러움 검증 — 제한적 PASS
 
@@ -144,7 +148,8 @@
 - 코드 구현: PASS
 - 정적/브라우저 QA: PASS
 - 모바일 공개 배포 확인: PASS
-- PC 공개화면 확인: 미확인
+- PC 공개화면 확인: PASS
+- 현 운영본 배포 승인: PASS
 - 번역 원어민 자연스러움: 미검증
 - Google Search Console: VERIFIED
 - IndexNow 글로벌 제출: ACTIVE / FIRST_SUBMISSION_PASS
@@ -156,7 +161,7 @@
 - 자체 도메인: DECISION_GATE
 - 시장 검증: 표본 부족
 
-현재 기술 Gate는 `IMPLEMENTED / QA_PASS / MOBILE_LIVE_VERIFIED / SEARCH_DISTRIBUTION_ACTIVE_WITH_MARKET_GATES`다.
+현재 기술 Gate는 `IMPLEMENTED / QA_PASS / LIVE_VERIFIED / RELEASE_APPROVED / SEARCH_DISTRIBUTION_ACTIVE_WITH_MARKET_GATES`다.
 
 ## 중앙 운영 인계
 
@@ -181,5 +186,4 @@
 3. 자체 도메인 도입 여부를 비용·브랜드·Yandex Webmaster 효익 기준으로 판단
 4. 중국 본토를 실제 우선시장으로 승격할 경우 접근 가능한 호스팅·규제·Baidu 등록을 별도 검토
 5. 러시아어권 실제 수요가 확인될 경우 `ru` 현지화 추가 여부 판단
-6. PC 공개화면 최종 확인
-7. 실제 데이터 기준으로 Continue / Hold / 개선 판단
+6. 실제 데이터 기준으로 Continue / Hold / 개선 판단
