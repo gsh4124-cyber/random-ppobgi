@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 해외 언어 클라이언트 로딩 단계 제거 / 최종 정적 QA PASS / 최종 Chromium 다국어·모바일 헤더 QA PASS / 모바일 공개화면 최신 배포 확인**
+**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 해외 언어 클라이언트 로딩 단계 제거 / 최종 정적 QA PASS / 최종 Chromium 다국어·모바일 헤더 QA PASS / 모바일 공개화면 최신 배포 확인 / 글로벌 검색 유통 자동화 시작**
 
 - 운영 주소: https://random-ppobgi.pages.dev/
 - 배포 구조: Cloudflare Pages
@@ -91,6 +91,22 @@
 - 따라서 모바일 기준 최신 Cloudflare 배포와 헤더/언어 이동은 실제 사용자 확인까지 완료했다.
 - PC 공개화면 확인은 별도 보조 확인으로 남아 있으며, 모바일 확인 결과를 PC까지 자동 확장해 단정하지 않는다.
 
+## 검색 유통·색인 배포 — 2026-09-02
+
+- `robots.txt`는 모든 검색엔진 수집 허용 + `sitemap.xml` 위치 명시 상태를 확인했다.
+- `sitemap.xml`에는 한국어 루트, 16개 해외 언어 URL, 핵심 정보 페이지를 포함한 총 22개 URL이 들어 있다.
+- Google Search Console 등록·소유권 확인은 완료 상태다.
+- Bing이 권장하는 IndexNow를 배포 파이프라인에 추가했다.
+  - 키 파일: `/5e2e0b34361f1bec6589eecf94582b9f.txt`
+  - workflow: `.github/workflows/indexnow-submit.yml`
+  - 제품·언어·SEO 관련 파일이 main에 변경되면 sitemap의 전체 URL을 IndexNow에 자동 제출한다.
+- 첫 실제 IndexNow 실행 `33634379861`에서 HTTP `202`를 받고 **22개 URL 제출 성공**을 확인했다.
+- IndexNow 제출 성공은 색인 완료나 검색 노출을 의미하지 않는다. 실제 색인/노출은 각 검색엔진 결과와 Webmaster 도구 데이터로 별도 검증한다.
+- 네이버 서치어드바이저와 Daum 검색등록은 로그인/외부 폼 입력이 필요한 수동 Gate다.
+- Bing Webmaster Tools 계정 등록은 IndexNow 제출과 별개로 검색 성과 모니터링에 유용하지만, 계정 로그인이 필요한 수동 Gate다.
+- Yandex Webmaster는 공식 가이드상 자체 도메인 요구가 있어 현재 `pages.dev` 서브도메인 운영 구조에서는 우선 대상에서 제외한다.
+- Baidu는 중국어 시장 후보지만 사이트 소유확인/계정 기반 등록 Gate가 있어 현재 자동 처리 범위 밖이다.
+
 ## 운영 데이터
 
 - 핵심 이벤트: `game_start`, `game_complete`, `reroll`, `exclude_reroll`
@@ -108,6 +124,7 @@
 - QA 통과와 실제 공개 배포 확인을 구분한다.
 - 공개 배포와 실제 시장 성공을 구분한다.
 - 내부 QA 통과은 외부 사용성·검색성·수익성을 증명하지 않는다.
+- 검색엔진 제출과 실제 색인·노출을 구분한다.
 
 ## 현재 Gate
 
@@ -115,9 +132,15 @@
 - 정적/브라우저 QA: PASS
 - 모바일 공개 배포 확인: PASS
 - PC 공개화면 확인: 미확인
+- Google Search Console: VERIFIED
+- IndexNow 글로벌 제출: ACTIVE / FIRST_SUBMISSION_PASS
+- Naver Search Advisor: MANUAL_GATE
+- Daum 검색등록: MANUAL_GATE
+- Bing Webmaster Tools 계정 등록: MANUAL_GATE
+- Baidu 등록: OPTIONAL_MANUAL_GATE
 - 시장 검증: 표본 부족
 
-현재 기술 Gate는 `IMPLEMENTED / QA_PASS / MOBILE_LIVE_VERIFIED`다. PC 공개화면까지 확인되면 공개 배포 검증을 더 강하게 `LIVE_DEPLOY_VERIFIED`로 승격할 수 있다.
+현재 기술 Gate는 `IMPLEMENTED / QA_PASS / MOBILE_LIVE_VERIFIED / SEARCH_DISTRIBUTION_STARTED`다.
 
 ## 운영 원칙
 
@@ -129,4 +152,8 @@
 ## 다음 행동
 
 1. PC 공개화면에서 한 번 최종 확인
-2. 이후 Search Console 및 실제 외부 사용 데이터를 회수해 검색·사용 성과를 별도 판단
+2. 네이버 서치어드바이저에 사이트 등록·소유확인·sitemap 제출
+3. Daum 검색등록 신규 사이트 신청
+4. Bing Webmaster Tools에 Google Search Console에서 사이트 import 또는 수동 추가
+5. 중국어 유입 가치가 확인되면 Baidu 등록을 별도 수행
+6. 이후 검색엔진별 실제 색인·검색 유입 데이터를 회수해 Continue / Hold / 개선 판단
