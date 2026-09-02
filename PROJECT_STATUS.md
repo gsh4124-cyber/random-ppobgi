@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 정적 QA PASS / Chromium 다국어 QA PASS / 실제 Cloudflare 최신 배포 확인 대기**
+**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 해외 언어 클라이언트 로딩 단계 제거 / 정적 QA PASS / Chromium 다국어 QA PASS / 실제 Cloudflare 최신 배포 확인 대기**
 
 - 운영 주소: https://random-ppobgi.pages.dev/
 - 배포 구조: Cloudflare Pages
@@ -48,12 +48,13 @@
 
 현재 활성 구조:
 
-- 해외 완제품 로더: `full-app-loader.js`
+- Cloudflare Pages `functions/_middleware.js`가 `/en/` 등 16개 해외 언어 요청에서 `context.env.ASSETS.fetch('/')`로 동일한 한국어 본체 정적 자산을 서버 측에서 직접 가져와 첫 HTML 응답으로 제공한다.
+- 따라서 운영 경로에서는 과거의 `Loading… → full-app-loader.js → /index.html 재요청 → document.write()` 단계를 사용하지 않는다.
+- `full-app-loader.js`와 각 언어 route shell은 Pages Functions가 동작하지 않는 정적 fallback으로만 남겨둔다.
 - 16개 해외 언어 카탈로그: `locales.js`
 - 공통 해외 현지화 런타임: `i18n-v2.js`
 - 단일 언어 선택기: `language-switch.js`
-- 정보·법적 페이지 현지화 데이터: `info-locales.js`
-- 정보 페이지 런타임: `info-page.js`
+- 정보·법적 페이지 현지화 데이터/런타임 유지
 - 자동 검수: `.github/workflows/i18n-smoke.yml` + `tests/i18n-browser-smoke.mjs`
 
 2026-09-02 최종 수정·검증:
@@ -64,6 +65,7 @@
 - 16개 해외 언어의 정적 UI, 동적 게임 결과·진행문구, 게임도구, 접근성 `aria-label/title/placeholder`를 현지화
 - 동적으로 다시 생성되던 8개 게임명도 현지어로 재치환
 - 폭탄 시간 단위 및 직접 입력 접근성 문구 등 잔존 한국어 수정
+- 해외 언어 URL에서 보이던 명시적 `Loading full Random Picker…` 단계를 제거하기 위해 Cloudflare edge에서 본체 HTML을 직접 응답하도록 변경
 - 해외 정보 링크는 각 언어의 `/LANG/about/`, `/LANG/guide/`, `/LANG/privacy/`, `/LANG/terms/`, `/LANG/contact/` 경로를 유지
 - 아랍어는 RTL 적용
 - 언어 URL에 `html lang`, 현지화 title/description, canonical, hreflang + x-default 구조 적용
@@ -73,11 +75,13 @@
 
 ### 정적 QA — PASS
 
-GitHub Actions `i18n-smoke` 최신 검수에서 다음 항목이 모두 PASS했다.
+GitHub Actions `i18n-smoke` run `33626066589`에서 다음 항목이 PASS했다.
 
 - JavaScript syntax
 - 16개 해외 locale catalog 존재
-- 16개 language route shell
+- 16개 language route fallback 존재
+- 해외 언어 경로가 `context.env.ASSETS.fetch` 기반 직접 edge-render 구조인지 검사
+- production middleware가 `full-app-loader.js`를 사용하지 않는지 검사
 - 단일 활성 localization runtime path
 - 핵심 기능 localization key
 - sitemap 17개 언어 URL
@@ -85,7 +89,7 @@ GitHub Actions `i18n-smoke` 최신 검수에서 다음 항목이 모두 PASS했�
 
 ### Chromium 브라우저 QA — PASS
 
-GitHub Actions run `33622411890` / browser job `100222229034`에서 PASS했다.
+GitHub Actions run `33626066589` browser-smoke가 PASS했다.
 
 - 16개 해외 언어 초기 화면 전수검사
 - 언어 선택기 정확히 1개
@@ -97,12 +101,12 @@ GitHub Actions run `33622411890` / browser job `100222229034`에서 PASS했다.
 - 초기 화면 한국어 잔존 검사
 - `aria-label/title/placeholder` 한국어 잔존 검사
 - 아랍어 RTL 검사
-- 영어/일본어/스페인어/중국어/포르투갈어/아랍어 모바일에서 실제 룰렛 실행·결과 확인·게임도구 전환
+- 영어/일본어/스페인어/중국어/포르투갈어/아랍어 모바일 실제 실행·결과·게임도구 전환
 - 위 6개 해외 언어 모바일 가로 overflow 검사
 - 상호작용 후 언어 선택기 중복 재발 검사
-- 한국어 모바일에서 공통 언어 선택기 1개, 8개 게임, 5개 도구, 가로 overflow 검사
+- 한국어 모바일 공통 선택기/8개 게임/5개 도구/가로 overflow 검사
 
-따라서 저장소 코드와 로컬 Chromium 기준 다국어 기능/문자열 QA Gate는 PASS다.
+따라서 저장소 코드와 CI 기준 다국어 기능/문자열/직접 edge-render 구조 QA Gate는 PASS다.
 
 ## 운영 데이터
 
@@ -124,8 +128,8 @@ GitHub Actions run `33622411890` / browser job `100222229034`에서 PASS했다.
 
 ## 현재 병목
 
-- 저장소 최신 코드는 정적 QA와 Chromium QA를 통과했다.
-- 현재 ChatGPT 실행환경에서는 `random-ppobgi.pages.dev` DNS/공개 URL을 독립적으로 열지 못해 **Cloudflare Pages가 최신 main을 실제 제공하고 있는지는 아직 검증하지 못했다.**
+- 저장소 최신 코드는 직접 edge-render 구조의 정적 QA와 Chromium QA를 통과했다.
+- 현재 ChatGPT 실행환경에서는 `random-ppobgi.pages.dev` 공개 URL을 독립적으로 열지 못해 **Cloudflare Pages가 최신 main을 실제 제공하고 있는지는 아직 검증하지 못했다.**
 - 따라서 현재 Gate는 `IMPLEMENTED / QA_PASS / LIVE_DEPLOY_UNVERIFIED`다.
 - 외부 사용 표본이 아직 작아 제품 개선·확대 판단 근거가 부족하다.
 - sitemap의 검색엔진 재처리 결과는 별도 검색 점검에서 확인한다.
@@ -140,6 +144,6 @@ GitHub Actions run `33622411890` / browser job `100222229034`에서 PASS했다.
 ## 다음 행동
 
 1. Cloudflare Pages가 최신 main을 실제 배포했는지 확인
-2. 공개 주소에서 최소 한국어/영어/일본어/스페인어/중국어/포르투갈어/아랍어를 최종 확인
+2. 공개 주소에서 해외 언어 진입 시 과거 `Loading full Random Picker…` 화면이 더 이상 보이지 않는지 확인
 3. 공개 배포 QA가 통과하면 글로벌 다국어 구현을 `LIVE_DEPLOY_VERIFIED`로 승격
 4. 이후 Search Console 및 실제 외부 사용 데이터를 회수해 검색·사용 성과를 별도 판단
