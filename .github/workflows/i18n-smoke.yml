@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  smoke:
+  static-smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -70,3 +70,23 @@ jobs:
           grep -q 'x-default' functions/_middleware.js
           grep -q 'canonical' full-app-loader.js
           grep -q 'meta name=\"description\"' functions/_middleware.js
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Start local static server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/random-picker-http.log 2>&1 &
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/en/ >/dev/null && exit 0; sleep 1; done
+          cat /tmp/random-picker-http.log
+          exit 1
+      - name: Run multilingual browser smoke
+        run: node tests/i18n-browser-smoke.mjs
