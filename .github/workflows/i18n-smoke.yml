@@ -1,0 +1,49 @@
+name: i18n-smoke
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check full-app-loader.js
+          node --check global-i18n.js
+          node --check global-i18n-dynamic.js
+          node --check ko-language.js
+          node --check info-i18n.js
+      - name: Language route shells
+        run: |
+          set -eu
+          for lang in en ja es zh fr de pt id hi pl it nl tr vi th ar; do
+            test -f "$lang/index.html"
+            grep -q "rel=\"canonical\"" "$lang/index.html"
+            grep -q "/full-app-loader.js" "$lang/index.html"
+          done
+      - name: One localization runtime path
+        run: |
+          set -eu
+          grep -q '/global-i18n.js' full-app-loader.js
+          ! grep -q '/full-i18n-safe.js' full-app-loader.js
+          ! grep -q '/i18n-cleanup.js' full-app-loader.js
+          grep -q '/ko-language.js' functions/_middleware.js
+          grep -q 'global-i18n-dynamic.js' functions/_middleware.js
+      - name: Sitemap contains all 17 language URLs
+        run: |
+          set -eu
+          grep -q '<loc>https://random-ppobgi.pages.dev/</loc>' sitemap.xml
+          for lang in en ja es zh fr de pt id hi pl it nl tr vi th ar; do
+            grep -q "<loc>https://random-ppobgi.pages.dev/$lang/</loc>" sitemap.xml
+          done
+      - name: SEO language alternates configured
+        run: |
+          set -eu
+          grep -q 'hreflang' functions/_middleware.js
+          grep -q 'x-default' functions/_middleware.js
+          grep -q 'canonical' full-app-loader.js
+          grep -q 'meta name=\"description\"' functions/_middleware.js
