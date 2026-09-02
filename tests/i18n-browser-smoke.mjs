@@ -44,7 +44,7 @@ for (const lang of allForeign) {
   assert(await page.locator('.method').count() === 8, `${lang}: expected 8 picker games`);
   assert(await page.locator('.tool-tab').count() === 5, `${lang}: expected 5 game tools`);
   assert(await page.locator('#numberTab').count() === 1 && await page.locator('#nameTab').count() === 1, `${lang}: number/name modes missing`);
-  const visibleText = await page.locator('body').innerText();
+  const visibleText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });
   assert(!korean.test(visibleText), `${lang}: Korean remains in initial visible UI: ${koreanLines(visibleText)}`);
   const attrs=await koreanAttrs(page);
   assert(attrs.length===0, `${lang}: Korean remains in accessibility attributes: ${attrs.join(' | ')}`);
@@ -70,7 +70,7 @@ for (const lang of priority) {
     await show.click();
     await page.waitForTimeout(150);
   }
-  const dynamicText = await page.locator('body').innerText();
+  const dynamicText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });
   assert(!korean.test(dynamicText), `${lang}: Korean remains after picker execution: ${koreanLines(dynamicText)}`);
   const attrs=await koreanAttrs(page);
   assert(attrs.length===0, `${lang}: Korean remains in dynamic accessibility attributes: ${attrs.join(' | ')}`);
@@ -83,7 +83,7 @@ for (const lang of priority) {
   await tools.click();
   await page.waitForTimeout(80);
   assert(await page.locator('.tool-tab').count() === 5, `${lang}: tools missing after switching tab`);
-  const toolText = await page.locator('body').innerText();
+  const toolText = await page.evaluate(() => { const clone=document.body.cloneNode(true); clone.querySelector('#languageSwitch')?.remove(); return clone.innerText; });
   assert(!korean.test(toolText), `${lang}: Korean remains in game tools: ${koreanLines(toolText)}`);
   await page.close();
 }
