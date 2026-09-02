@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/indexnow-submit.yml'
       - 'index.html'
       - 'locales.js'
       - 'i18n-v2.js'
@@ -45,7 +46,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, urllib.request, xml.etree.ElementTree as ET
+          import json, urllib.request, urllib.error, xml.etree.ElementTree as ET
           key='5e2e0b34361f1bec6589eecf94582b9f'
           host='random-ppobgi.pages.dev'
           tree=ET.parse('sitemap.xml')
