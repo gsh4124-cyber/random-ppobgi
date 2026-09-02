@@ -10,7 +10,7 @@
       html = html
         .replace('<head>', `<head><base href="/">`)
         .replace(/<link rel="canonical"[^>]*>/i, `<link rel="canonical" href="${canonical}">`)
-        .replace('</body>', `<script>window.__RANDOM_PICKER_LANG__=${JSON.stringify(lang)};<\/script><script src="/full-i18n-safe.js"><\/script></body>`);
+        .replace('</body>', `<script>window.__RANDOM_PICKER_LANG__=${JSON.stringify(lang)};<\/script><script src="/full-i18n-safe.js"><\/script><script src="/i18n-cleanup.js"><\/script></body>`);
       document.open();
       document.write(html);
       document.close();
