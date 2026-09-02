@@ -35,17 +35,17 @@ jobs:
           done
       - name: One active localization runtime path
         run: |
-          set -eu
-          grep -q '/locales.js' full-app-loader.js
-          grep -q '/i18n-v2.js' full-app-loader.js
-          grep -q '/language-switch.js' full-app-loader.js
-          ! grep -q '/global-i18n.js' full-app-loader.js
-          ! grep -q '/global-i18n-dynamic.js' full-app-loader.js
-          ! grep -q '/full-i18n-safe.js' full-app-loader.js
-          ! grep -q '/i18n-cleanup.js' full-app-loader.js
-          grep -q '/language-switch.js' functions/_middleware.js
-          ! grep -q '/ko-language.js' functions/_middleware.js
-          ! grep -q '/global-i18n.js' functions/_middleware.js
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const loader=fs.readFileSync('full-app-loader.js','utf8');
+          const middleware=fs.readFileSync('functions/_middleware.js','utf8');
+          const required=['/locales.js','/i18n-v2.js','/language-switch.js'];
+          const forbidden=['/global-i18n.js','/global-i18n-dynamic.js','/full-i18n-safe.js','/i18n-cleanup.js','/ko-language.js'];
+          for(const s of required) if(!loader.includes(s)) throw new Error(`loader missing ${s}`);
+          for(const s of forbidden) if(loader.includes(s)) throw new Error(`loader still references ${s}`);
+          if(!middleware.includes('/language-switch.js')) throw new Error('root middleware missing shared selector');
+          for(const s of ['/global-i18n.js','/ko-language.js']) if(middleware.includes(s)) throw new Error(`middleware still references ${s}`);
+          NODE
       - name: Core feature localization keys exist
         run: |
           set -eu
