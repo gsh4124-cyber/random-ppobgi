@@ -8,7 +8,7 @@
 
 ## 현재 상태
 
-**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 해외 언어 클라이언트 로딩 단계 제거 / 최종 정적 QA PASS / 최종 Chromium 다국어·모바일 헤더 QA PASS / 모바일 공개화면 최신 배포 확인 / 글로벌 검색 유통 자동화 시작**
+**v50 운영본 + 17개 언어 글로벌 공통 완제품 구현 / 해외 언어 클라이언트 로딩 단계 제거 / 최종 정적 QA PASS / 최종 Chromium 다국어·모바일 헤더 QA PASS / 모바일 공개화면 최신 배포 확인 / 글로벌 검색 유통 자동화 시작 / 수동 검색엔진 등록은 중앙 운영으로 이관**
 
 - 운영 주소: https://random-ppobgi.pages.dev/
 - 배포 구조: Cloudflare Pages
@@ -91,6 +91,13 @@
 - 따라서 모바일 기준 최신 Cloudflare 배포와 헤더/언어 이동은 실제 사용자 확인까지 완료했다.
 - PC 공개화면 확인은 별도 보조 확인으로 남아 있으며, 모바일 확인 결과를 PC까지 자동 확장해 단정하지 않는다.
 
+### 번역 자연스러움 검증 — 제한적 PASS
+
+- 황제는 외국어를 직접 정밀 검수하기 어렵기 때문에 눈에 보이는 구조·화면·동작 기준으로 합격 판정했다.
+- 코드상 locale 적용, 동적 문구, 접근성 문자열, RTL 및 브라우저 동작은 자동 QA로 검증했다.
+- 다만 16개 해외 언어 전체가 원어민 수준으로 자연스럽다는 별도 현지 사용자 검증은 아직 하지 않았다.
+- 따라서 현재 판정은 `기능·레이아웃·현지화 적용 PASS / 원어민 자연스러움 미검증`으로 분리한다.
+
 ## 검색 유통·색인 배포 — 2026-09-02
 
 - `robots.txt`는 모든 검색엔진 수집 허용 + `sitemap.xml` 위치 명시 상태를 확인했다.
@@ -102,10 +109,9 @@
   - 제품·언어·SEO 관련 파일이 main에 변경되면 sitemap의 전체 URL을 IndexNow에 자동 제출한다.
 - 첫 실제 IndexNow 실행 `33634379861`에서 HTTP `202`를 받고 **22개 URL 제출 성공**을 확인했다.
 - IndexNow 제출 성공은 색인 완료나 검색 노출을 의미하지 않는다. 실제 색인/노출은 각 검색엔진 결과와 Webmaster 도구 데이터로 별도 검증한다.
-- 네이버 서치어드바이저와 Daum 검색등록은 로그인/외부 폼 입력이 필요한 수동 Gate다.
-- Bing Webmaster Tools 계정 등록은 IndexNow 제출과 별개로 검색 성과 모니터링에 유용하지만, 계정 로그인이 필요한 수동 Gate다.
+- 네이버 서치어드바이저, Daum 검색등록, Bing Webmaster Tools 등 계정 로그인·소유확인·외부 폼 입력이 필요한 등록은 황제 결정에 따라 **랜덤뽑기 본부에서 개별 진행하지 않고 중앙 운영에서 일괄 처리**한다.
+- Baidu는 중국어 시장 후보지만 계정/소유확인 기반 등록 Gate로 중앙 검토 대상으로 둔다.
 - Yandex Webmaster는 공식 가이드상 자체 도메인 요구가 있어 현재 `pages.dev` 서브도메인 운영 구조에서는 우선 대상에서 제외한다.
-- Baidu는 중국어 시장 후보지만 사이트 소유확인/계정 기반 등록 Gate가 있어 현재 자동 처리 범위 밖이다.
 
 ## 운영 데이터
 
@@ -123,8 +129,9 @@
 - 구현 완료와 QA 통과를 구분한다.
 - QA 통과와 실제 공개 배포 확인을 구분한다.
 - 공개 배포와 실제 시장 성공을 구분한다.
-- 내부 QA 통과은 외부 사용성·검색성·수익성을 증명하지 않는다.
+- 내부 QA 통과는 외부 사용성·검색성·수익성을 증명하지 않는다.
 - 검색엔진 제출과 실제 색인·노출을 구분한다.
+- 현지화 적용과 원어민 자연스러움 검증을 구분한다.
 
 ## 현재 Gate
 
@@ -132,15 +139,21 @@
 - 정적/브라우저 QA: PASS
 - 모바일 공개 배포 확인: PASS
 - PC 공개화면 확인: 미확인
+- 번역 원어민 자연스러움: 미검증
 - Google Search Console: VERIFIED
 - IndexNow 글로벌 제출: ACTIVE / FIRST_SUBMISSION_PASS
-- Naver Search Advisor: MANUAL_GATE
-- Daum 검색등록: MANUAL_GATE
-- Bing Webmaster Tools 계정 등록: MANUAL_GATE
-- Baidu 등록: OPTIONAL_MANUAL_GATE
+- Naver / Daum / Bing Webmaster / 필요 시 Baidu: CENTRAL_MANUAL_GATE
 - 시장 검증: 표본 부족
 
 현재 기술 Gate는 `IMPLEMENTED / QA_PASS / MOBILE_LIVE_VERIFIED / SEARCH_DISTRIBUTION_STARTED`다.
+
+## 중앙 운영 인계
+
+2026-09-02 황제 결정:
+
+- 랜덤뽑기 본부는 제품 코드·QA·배포·제품별 상태와 자동 검색 제출 구조를 담당한다.
+- Naver Search Advisor, Daum 검색등록, Bing Webmaster Tools, 필요 시 Baidu 등 **로그인·소유확인·수동 제출이 필요한 검색엔진 등록은 중앙에서 여러 페이지형 제품과 함께 일괄 처리**한다.
+- 중앙 등록 완료 결과가 돌아오면 랜덤뽑기 본부는 `PROJECT_STATUS.md`와 Vault에 결과만 반영하고, 실제 색인·유입 데이터로 다음 판단을 한다.
 
 ## 운영 원칙
 
@@ -152,8 +165,7 @@
 ## 다음 행동
 
 1. PC 공개화면에서 한 번 최종 확인
-2. 네이버 서치어드바이저에 사이트 등록·소유확인·sitemap 제출
-3. Daum 검색등록 신규 사이트 신청
-4. Bing Webmaster Tools에 Google Search Console에서 사이트 import 또는 수동 추가
-5. 중국어 유입 가치가 확인되면 Baidu 등록을 별도 수행
-6. 이후 검색엔진별 실제 색인·검색 유입 데이터를 회수해 Continue / Hold / 개선 판단
+2. 중앙 운영에서 Naver / Daum / Bing Webmaster / 필요 시 Baidu 등록을 일괄 처리
+3. 중앙 등록 결과를 이 상태파일과 Vault에 동기화
+4. Search Console, IndexNow 참여 검색엔진 및 실제 외부 사용 데이터를 회수해 색인·검색유입·사용 성과 판단
+5. 실제 데이터 기준으로 Continue / Hold / 개선 판단
