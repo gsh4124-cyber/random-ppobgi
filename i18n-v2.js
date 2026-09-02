@@ -79,6 +79,8 @@
     if(raw==null)return raw;const leading=raw.match(/^\s*/)?.[0]||'',trailing=raw.match(/\s*$/)?.[0]||'',s=raw.trim();if(!s)return raw;
     if(exact.has(s))return leading+exact.get(s)+trailing;
     let x=s;
+    const methodWords={사다리:pack.methods.ladder,룰렛:pack.methods.wheel,제비:pack.methods.lot,핀볼:pack.methods.pinball,경주:pack.methods.race,캡슐:pack.methods.capsule,슬롯:pack.methods.slot,폭탄:pack.methods.bomb};
+    for(const [ko,value] of Object.entries(methodWords))x=x.split(ko).join(value);
     x=x.replace(/(\d+)명\s*도착/g,(_,n)=>`${compactCount(n)} ${pack.dynamic.arrived}`);
     x=x.replace(/(\d+)명/g,(_,n)=>compactCount(n));
     x=x.replace(/(\d+)번/g,(_,n)=>`#${n}`);
