@@ -6,14 +6,14 @@
   document.documentElement.lang=pack.htmlLang||lang;
   document.documentElement.dir=pack.dir||'ltr';
 
-  const set=(sel,text)=>{const el=q(sel);if(el&&text!=null)el.textContent=text};
-  const attr=(sel,name,text)=>{const el=q(sel);if(el&&text!=null)el.setAttribute(name,text)};
+  const set=(sel,text,r=document)=>{const el=q(sel,r);if(el&&text!=null)el.textContent=text};
+  const attr=(sel,name,text,r=document)=>{const el=q(sel,r);if(el&&text!=null&&el.getAttribute(name)!==String(text))el.setAttribute(name,text)};
   const textAfterIcon=(el,text)=>{if(!el)return;const icon=el.querySelector('span');if(icon){[...el.childNodes].filter(n=>n!==icon).forEach(n=>n.remove());el.append(document.createTextNode(text));}else el.textContent=text};
 
   function localizeStatic(){
     set('.logo',pack.brand);set('#resetBtn',pack.reset);set('.hero h1',pack.hero);set('.hero p',pack.tagline);
     set('#showPicker',pack.pickerGames);set('#showTools',pack.gameTools);set('.method-label',pack.pickMethod);
-    qa('.method').forEach(b=>set('.name',pack.methods[b.dataset.method]||b.dataset.method,b));
+    qa('.method').forEach(b=>{const e=q('.name',b);if(e)e.textContent=pack.methods[b.dataset.method]||b.dataset.method;});
     set('#numberTab',pack.number);set('#nameTab',pack.name);
     const bombLabel=q('#bombSettings .label span');if(bombLabel)bombLabel.textContent=pack.bombTime;
     set('#bombModeRandom',pack.random);set('#bombModeFixed',pack.setTime);
@@ -41,8 +41,8 @@
     const team=q('[data-panel="team"]');if(team){set('h3',pack.tools.teamTitle,team);set('.tool-desc',pack.tools.teamDesc,team);attr('#teamNames','placeholder',pack.tools.participantPlaceholder);const l=q('label',team);if(l)l.textContent=pack.tools.teamCount;set('#makeTeams',pack.tools.makeTeams);set('#teamResult',pack.tools.teamPrompt);}
 
     const info=q('.service-info');
-    if(info)info.innerHTML=`<div class="service-copy" data-copy="picker"><h2>${esc(pack.service.pickerHeading)}</h2><p>${esc(pack.service.pickerP)}</p><div class="game-tool-note"><strong>${esc(pack.service.pickerNoteH)}</strong><p>${esc(pack.service.pickerNoteP)}</p></div></div><div class="service-copy" data-copy="tools" hidden><h2>${esc(pack.service.toolsHeading)}</h2><p>${esc(pack.service.toolsP)}</p><div class="game-tool-note"><strong>${esc(pack.service.toolsNoteH)}</strong><p>${esc(pack.service.toolsNoteP)}</p></div></div><details><summary>${esc(pack.service.gamesQ)}</summary><p>${Object.values(pack.methods).map(esc).join(' · ')}</p></details><details><summary>${esc(pack.service.toolsQ)}</summary><p>${[pack.tools.dice,pack.tools.yut,pack.tools.coin,pack.tools.order,pack.tools.team].map(esc).join(' · ')}</p></details><details><summary>${esc(pack.service.modesQ)}</summary><p>${esc(pack.service.modesA)}</p></details><details><summary>${esc(pack.service.savedQ)}</summary><p>${esc(pack.service.savedA)}</p></details><details><summary>${esc(pack.service.fairQ)}</summary><p>${esc(pack.service.fairA)}</p></details><details><summary>${esc(pack.service.faqQ)}</summary><p>${esc(pack.service.faqA)}</p></details>`;
-    const footer=q('.site-footer');if(footer){const links=qa('a',footer),labels=[pack.footer.about,pack.footer.guide,pack.footer.privacy,pack.footer.terms,pack.footer.contact],paths=['about','guide','privacy','terms','contact'];links.forEach((a,i)=>{if(labels[i])a.textContent=labels[i];if(paths[i])a.href=`/${lang}/${paths[i]}/`;});const p=q('p',footer);if(p)p.textContent=pack.footer.browserOnly;const nav=q('nav',footer);if(nav)nav.setAttribute('aria-label',pack.service.faqQ);}
+    if(info&&!info.dataset.localized){info.dataset.localized='1';info.innerHTML=`<div class="service-copy" data-copy="picker"><h2>${esc(pack.service.pickerHeading)}</h2><p>${esc(pack.service.pickerP)}</p><div class="game-tool-note"><strong>${esc(pack.service.pickerNoteH)}</strong><p>${esc(pack.service.pickerNoteP)}</p></div></div><div class="service-copy" data-copy="tools" hidden><h2>${esc(pack.service.toolsHeading)}</h2><p>${esc(pack.service.toolsP)}</p><div class="game-tool-note"><strong>${esc(pack.service.toolsNoteH)}</strong><p>${esc(pack.service.toolsNoteP)}</p></div></div><details><summary>${esc(pack.service.gamesQ)}</summary><p>${Object.values(pack.methods).map(esc).join(' · ')}</p></details><details><summary>${esc(pack.service.toolsQ)}</summary><p>${[pack.tools.dice,pack.tools.yut,pack.tools.coin,pack.tools.order,pack.tools.team].map(esc).join(' · ')}</p></details><details><summary>${esc(pack.service.modesQ)}</summary><p>${esc(pack.service.modesA)}</p></details><details><summary>${esc(pack.service.savedQ)}</summary><p>${esc(pack.service.savedA)}</p></details><details><summary>${esc(pack.service.fairQ)}</summary><p>${esc(pack.service.fairA)}</p></details><details><summary>${esc(pack.service.faqQ)}</summary><p>${esc(pack.service.faqA)}</p></details>`;}
+    const footer=q('.site-footer');if(footer){const links=qa('a',footer),labels=[pack.footer.about,pack.footer.guide,pack.footer.privacy,pack.footer.terms,pack.footer.contact],paths=['about','guide','privacy','terms','contact'];links.forEach((a,i)=>{if(labels[i])a.textContent=labels[i];if(paths[i])a.href=`/${paths[i]}/?lang=${encodeURIComponent(lang)}`;});const p=q('p',footer);if(p)p.textContent=pack.footer.browserOnly;const nav=q('nav',footer);if(nav)nav.setAttribute('aria-label',pack.service.faqQ);}
 
     const sample=q('#sampleBtn');if(sample&&!sample.dataset.i18nOverride){sample.dataset.i18nOverride='1';sample.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();const names=q('#names');if(!names)return;const n=Math.max(2,Math.floor(Number(q('#totalPeople')?.value)||8));names.value=Array.from({length:n},(_,i)=>pack.dynamic.sampleNames[i%pack.dynamic.sampleNames.length]+(i>=pack.dynamic.sampleNames.length?` ${Math.floor(i/pack.dynamic.sampleNames.length)+1}`:'')).join('\n');names.dispatchEvent(new Event('input',{bubbles:true}));},{capture:true});}
   }
@@ -54,7 +54,7 @@
     ['말 경주',pack.dynamic.horseRace],['캐릭터',pack.dynamic.character],['준비',pack.dynamic.ready],['경주 시작',pack.dynamic.raceStart],['번호 순서는 그대로 두고, 도착만 랜덤으로 정해져요.',pack.dynamic.raceHint],['완주',pack.dynamic.finished],['완료',pack.dynamic.complete],['출발!',pack.dynamic.depart],['우승!',pack.dynamic.champion],
     ['레버 돌리기',pack.dynamic.capsuleLever],['레버를 돌리면 캡슐이 섞이고, 한 알이 내려와 열립니다.',pack.dynamic.capsuleHint],['돌리는 중…',pack.dynamic.spinning],['나오는 중…',pack.dynamic.dispensing],['다음 캡슐',pack.dynamic.nextCapsule],
     ['슬롯 시작',pack.dynamic.slotStart],['릴이 하나씩 멈추고 가운데 결과가 당첨됩니다.',pack.dynamic.slotHint],['다음 슬롯',pack.dynamic.nextSlot],
-    ['화면을 켜 둔 채로 휴대폰을 돌리세요',pack.dynamic.bombPass],['준비되면 시작',pack.dynamic.bombReady],['폭탄 시작',pack.dynamic.bombStart],['바로 터뜨리기',pack.dynamic.explodeNow],['15초~5분 사이에서 매번 랜덤으로 터져요.',pack.dynamic.bombRandomHint],['걸렸습니다!',pack.dynamic.caught],['💥 지금 들고 있는 사람이 당첨!',pack.dynamic.bombWinner],['다시 시작',pack.dynamic.restart],['넘기는 중…',pack.dynamic.passing],
+    ['화면을 켜 둔 채로 휴대폰을 돌리세요',pack.dynamic.bombPass],['준비되면 시작',pack.dynamic.bombReady],['폭탄 시작',pack.dynamic.bombStart],['바로 터뜨리기',pack.dynamic.explodeNow],['15초~5분 사이에서 매번 랜덤으로 터져요.',pack.dynamic.bombRandomHint],['설정한 시간 뒤에 터집니다.',pack.dynamic.bombFixedHint],['걸렸습니다!',pack.dynamic.caught],['💥 지금 들고 있는 사람이 당첨!',pack.dynamic.bombWinner],['다시 시작',pack.dynamic.restart],['넘기는 중…',pack.dynamic.passing],
     ['넘기세요',pack.dynamic.holders[0]],['다음 사람',pack.dynamic.holders[1]],['돌리세요',pack.dynamic.holders[2]],['조심하세요',pack.dynamic.holders[3]],['빨리 넘기세요',pack.dynamic.holders[4]],['아직 안 터졌어요',pack.dynamic.holders[5]],
     ['참가자 공이 장애물을 지나 중앙 홀로 떨어지는 핀볼 경기',pack.dynamic.pinballAria],['공들이 맨 위 좌우에서 떨어져요',pack.dynamic.pinballLive],['공들이 맨 위 좌우에서 떨어집니다',pack.dynamic.ballsFalling],['핀볼 시작',pack.dynamic.pinballStart],['동작 줄이기 설정으로 결과를 빠르게 표시합니다',pack.dynamic.reducedMotion],['진행 중',pack.dynamic.inProgress],
     ['미디어 음량을 확인해주세요',pack.dynamic.mediaVolume],['앞면',pack.dynamic.heads],['뒷면',pack.dynamic.tails],['모',pack.yut.mo],['도',pack.yut.do],['개',pack.yut.gae],['걸',pack.yut.geol],['윷',pack.yut.yut],
@@ -90,8 +90,6 @@
 
   const observer=new MutationObserver(records=>{for(const r of records){if(r.type==='childList')r.addedNodes.forEach(translateNode);else if(r.type==='characterData')translateNode(r.target);else if(r.type==='attributes')translateNode(r.target);}});
   observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','title','placeholder']});
-
-  // UI routines in the core app may rewrite Korean labels after interactions; run a few bounded cleanup passes.
   [80,300,900].forEach(ms=>setTimeout(()=>{localizeStatic();translateAll();},ms));
   window.__RANDOM_PICKER_I18N_READY__=true;
 })();
