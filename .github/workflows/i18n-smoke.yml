@@ -7,6 +7,7 @@ on:
 
 jobs:
   static-smoke:
+    name: Static Guardrails
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -89,6 +90,7 @@ jobs:
           grep -q 'meta\[name="description"\]' functions/_middleware.js
 
   browser-smoke:
+    name: Browser Behavior QA
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -107,3 +109,19 @@ jobs:
           exit 1
       - name: Run multilingual browser smoke
         run: node tests/i18n-browser-smoke.mjs
+
+  quality-gate:
+    name: Combined Quality Gate
+    if: always()
+    needs: [static-smoke, browser-smoke]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require both independent checks to pass
+        env:
+          STATIC_RESULT: ${{ needs.static-smoke.result }}
+          BROWSER_RESULT: ${{ needs.browser-smoke.result }}
+        run: |
+          echo "static=$STATIC_RESULT"
+          echo "browser=$BROWSER_RESULT"
+          test "$STATIC_RESULT" = "success"
+          test "$BROWSER_RESULT" = "success"
