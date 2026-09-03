@@ -116,3 +116,13 @@ Yandex 공식 문서는 IndexNow를 신규·변경 URL 알림 방법으로 지�
 - Yandex Webmaster: `BLOCKED_BY_PAGES_DEV_DOMAIN`
 - 중국 본토 검색유통: `BLOCKED_BY_PAGES_INFRA + CENTRAL_ACCOUNT_GATE`
 - 실제 색인·유입·시장성: `NOT_YET_VALIDATED`
+
+## 2026-09-03 중앙 수동등록 실행
+
+- Naver Search Advisor 로그인 및 사이트 등록 시작 완료.
+- 발급된 소유확인 meta를 `index.html`에 추가했다.
+- 저장소 commit: `ec3e40ff37bcbba444044f067544b349262b47a3`
+- 실제 운영 URL에서 meta 배포 확인 완료.
+- Search Advisor의 최종 소유확인 버튼 클릭 직전 Cloud Browser 연결 timeout으로 중단됐다.
+- 현재 상태: `REGISTERED_PENDING_FINAL_VERIFY`
+- 최종 소유확인, sitemap 제출, URL 수집 요청은 Browser 연결 복구 후 이어서 실행한다.
