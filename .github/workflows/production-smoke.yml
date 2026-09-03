@@ -1,0 +1,43 @@
+name: Production Browser Smoke
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '20 */6 * * *'
+
+concurrency:
+  group: random-picker-production-smoke
+  cancel-in-progress: true
+
+jobs:
+  production-browser-smoke:
+    name: Production Browser QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Wait for public Cloudflare Pages surface
+        run: |
+          set -e
+          for i in {1..20}; do
+            if curl -fsS --max-time 20 https://random-ppobgi.pages.dev/en/ >/dev/null; then
+              echo "Production surface reachable"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Production surface did not become reachable"
+          exit 1
+      - name: Run the same multilingual behavior QA against production
+        env:
+          I18N_TEST_BASE: https://random-ppobgi.pages.dev
+        run: node tests/i18n-browser-smoke.mjs
