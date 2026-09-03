@@ -8,30 +8,64 @@
 
 ## 현재 단계
 
-**17개 언어 동일 완제품 구조 구현 / 최근 공개 다국어 UI 회귀 확인 / 수정 코드 반영 / 최신 공개 실사용 재검증 필요 / 검색 유통 구조 활성**
+**17개 언어 동일 완제품 구조 구현 / 최근 공개 다국어 UI 회귀 수정 / 실제 Cloudflare Pages 공개 Production Browser QA PASS / 검색 유통 구조 활성 / 인간 실사용·원어민 자연스러움 별도 검증**
 
-과거 자동 정적·Chromium QA와 공개 모바일·PC 확인을 근거로 `LIVE_VERIFIED / RELEASE_APPROVED`까지 올린 이력이 있다.
-
-그러나 그 이후 2026-09-03 황제가 실제 해외 공개 페이지에서 다음 회귀를 직접 확인했다.
+2026-09-03 황제가 실제 해외 공개 페이지에서 다음 회귀를 직접 확인한 이력이 있다.
 
 - 언어 선택기·지구 아이콘 중복
 - 중복 제거 후 언어 선택기 자체 소실
 - 일본어/영어 페이지 일부 한국어 잔존
 - 언어 선택기 위치가 의도한 헤더/박스 오른쪽 끝과 다르게 표시
 
-이후 관련 코드 수정이 추가됐으므로 **과거 PASS를 현재 빌드 PASS로 승계하지 않는다.**
+관련 수정 후 자동 정적 QA뿐 아니라 **실제 `random-ppobgi.pages.dev` 공개 URL을 여는 Production Browser QA**를 별도 운영한다.
 
 현재 기술상태:
 
 - 8개 게임 + 5개 게임도구 공통 코어: `IMPLEMENTED`
 - 한국어 포함 17개 언어 URL: `IMPLEMENTED`
-- 과거 i18n 정적/브라우저 QA: `PAST_PASS`
-- 최근 실제 공개화면 회귀: `CONFIRMED`
-- 최근 수정: `APPLIED`
-- 최신 공개화면 최종 재검증: `REQUIRED`
+- 정적/로컬 Chromium i18n QA: `PASS`
+- 실제 공개 Production Browser QA: `PASS WITH FIXES`
+- Cloudflare 배포 commit 일치 확인: `PASS`
+- 인간의 최종 시각·체감 확인: `NOT CLAIMED BY AUTOMATION`
 - 원어민 번역 자연스러움: `UNVERIFIED`
 
-> 코드 반영 완료 ≠ 배포 반영 완료 ≠ 최신 공개 화면 PASS
+> 코드 반영 완료 ≠ CI PASS ≠ Cloudflare 배포 완료 ≠ 공개 Production QA PASS ≠ 인간 실사용·시장 성공
+
+## 2026-09-03 공개 Production QA 강화
+
+기존 `Production Browser Smoke`는 공개 URL이 열리기만 하면 테스트를 시작했기 때문에 새 commit의 Cloudflare 배포가 아직 끝나지 않은 순간에 이전 배포본을 새 commit의 PASS로 검사할 가능성이 있었다.
+
+Cloudflare GitHub App이 각 commit에 `Cloudflare Pages` check run을 남기고, 해당 check에는 실제 배포 commit과 배포 성공 여부가 포함되는 것을 확인했다.
+
+따라서 현재 push 기반 Production QA는:
+
+1. 현재 `GITHUB_SHA`의 GitHub check-runs를 조회한다.
+2. app slug가 `cloudflare-workers-and-pages`이고 이름이 `Cloudflare Pages`인 check를 기다린다.
+3. **현재 commit의 Cloudflare Pages check가 completed + success가 된 뒤에만** 공개 QA를 시작한다.
+4. 그 뒤 production alias `https://random-ppobgi.pages.dev`에서 기존 다국어 browser smoke 전체를 실행한다.
+
+최종 확인:
+- commit `f85db130468bb3788f43bddc3a6d91751023af1d`
+- Cloudflare Pages exact-commit deployment check: **SUCCESS**
+- Production Browser Smoke run `33753483863`: **SUCCESS**
+- `Wait for Cloudflare Pages deployment of this exact commit`: SUCCESS
+- `Wait for public production alias`: SUCCESS
+- `Run multilingual behavior QA against production`: SUCCESS
+
+현재 공개 QA는 다음을 자동 검증한다.
+
+- 16개 해외 언어 초기화면
+- 대표 `en / ja / es / zh / pt / ar`의 390px·360px 상호작용
+- 한국어 모바일/header
+- 언어 선택기 정확성·중복 방지
+- 초기·동적 UI의 한국어 leakage
+- 8개 picker + 5개 game tool 존재
+- 번호/이름 모드
+- 실행·결과·재추첨 후 pageerror
+- 모바일 horizontal overflow
+- Arabic RTL
+
+이 PASS는 원어민 문장 자연스러움, 실제 다양한 물리기기의 체감, 인간이 보는 미세한 레이아웃 미감을 자동으로 확정하지 않는다.
 
 ## 제품 원칙
 
@@ -45,28 +79,7 @@
 지원 언어:
 `ko / en / ja / es / zh / fr / de / pt / id / hi / pl / it / nl / tr / vi / th / ar`
 
-## 최신 공개 QA Gate
-
-최소 실제 재검증:
-
-1. 한국어 루트
-2. 영어 `/en/`
-3. 일본어 `/ja/`
-4. 언어 선택기가 헤더/박스 오른쪽 끝에 정확히 1개인지
-5. 지구 아이콘 중복 없음
-6. 현재 언어명이 맞게 표시되고 언어 이동 정상인지
-7. 대표 해외 화면에 한국어 잔존이 없는지
-8. 8개 게임과 5개 도구가 같은 기능으로 표시·실행되는지
-9. 번호/이름 모드, 실행·결과·재추첨 동적 문구
-10. 모바일 주요 폭에서 헤더 겹침·overflow 없음
-
-대표 언어에서 문제가 발견되면 영향범위를 넓혀 17개 언어 회귀검사를 다시 수행한다.
-
-실제 공개화면 재확인 전에는 `FULL QA PASS`, `LIVE_VERIFIED`, `RELEASE_APPROVED`를 사용하지 않는다.
-
 ## 검색 유통
-
-UI 재검증과 검색유통은 별도 축이다.
 
 현재 확인된 구조:
 - `robots.txt`
@@ -96,8 +109,6 @@ Vault snapshot:
 
 ## AdSense
 
-AdSense는 첫 광고형 페이지 사업의 중요 Gate다. 다만 **최신 공개 UI 재검증이 먼저**다.
-
 현재 상태:
 `ADSENSE_PREP / ADDRESSABILITY_UNVERIFIED`
 
@@ -105,21 +116,21 @@ AdSense는 첫 광고형 페이지 사업의 중요 Gate다. 다만 **최신 공
 
 ## 다음 행동
 
-1. 최신 Cloudflare 공개 배포가 최근 수정 커밋을 반영했는지 확인한다.
-2. 한국어·영어·일본어 공개화면과 언어 선택기를 실제로 재검증한다.
-3. 남은 한글/중복 UI/위치 문제 발견 시 최소 수정 후 영향범위를 회귀검사한다.
-4. 공개 실사용 PASS 뒤 자동 QA와 상태파일을 다시 동기화한다.
-5. 그 다음 AdSense 주소 등록 가능성 Gate를 진행한다.
-6. 수동 검색엔진 등록은 중앙 검색엔진 등록 작업과 동기화한다.
+1. Production Browser Smoke를 자동 감시로 유지한다.
+2. 인간 시각·실기기에서 대표 한국어·영어·일본어와 언어 선택기의 미세한 체감 문제가 있으면 그때만 수정한다.
+3. 원어민 자연스러움은 별도 검증으로 남긴다.
+4. 다음 상업 Gate인 AdSense 사이트 주소 등록 가능성을 실제 계정에서 확인한다.
+5. 수동 검색엔진 등록은 중앙 검색엔진 등록 작업과 동기화한다.
 
 ## 사고분리
 
 - 코드 수정 ≠ 자동 QA PASS
-- 자동 QA PASS ≠ 공개 배포 PASS
-- 과거 공개 PASS ≠ 최신 수정본 PASS
+- 자동 QA PASS ≠ Cloudflare 배포 완료
+- Cloudflare 배포 완료 ≠ 공개 Production QA PASS
+- 공개 자동 QA PASS ≠ 인간 실사용·원어민 자연스러움
 - 공개 PASS ≠ 검색 성공
 - 검색 성공 ≠ 수익 성공
 
 현재 최종 상태:
 
-`IMPLEMENTED / RECENT_REAL-USE_REGRESSION_FOUND / FIXES_APPLIED / PUBLIC_REVERIFY_REQUIRED / SEARCH_DISTRIBUTION_ACTIVE / ADSENSE_PREP`
+`IMPLEMENTED / RECENT_REAL-USE_REGRESSION_FIXED / EXACT_CLOUDFLARE_DEPLOYMENT_CONFIRMED / PRODUCTION_BROWSER_QA_PASS / HUMAN_NATIVE_FEEL_UNVERIFIED / SEARCH_DISTRIBUTION_ACTIVE / ADSENSE_PREP`
