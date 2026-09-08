@@ -24,6 +24,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Require repository security guardrails
+        run: python3 security_guardrails.py
       - uses: actions/setup-node@v4
         with:
           node-version: 22
