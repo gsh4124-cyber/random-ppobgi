@@ -11,6 +11,15 @@
 
 집계 차원은 `method`, `input_mode`, `participant_bucket`, `result_mode`입니다. 이름, 번호 목록, 직접 입력 결과, 당첨 내용, 사용자·세션 식별자, IP, User-Agent, 리퍼러는 애플리케이션 데이터로 저장하지 않습니다.
 
+## 자동 QA 트래픽 제외
+
+2026-09-09부터 Production Browser Smoke 같은 자동 브라우저 QA는 시장 사용량에 섞이지 않도록 `/api/events`에서 제외합니다.
+
+- `HeadlessChrome` / `Playwright` 계열 자동 브라우저 요청은 `204`로 종료하고 D1 count를 증가시키지 않습니다.
+- `?qa=1`이 붙은 동일 출처 QA 페이지에서 발생한 이벤트도 저장하지 않습니다.
+- 이 변경 이전의 집계에는 Production Browser Smoke가 실제 룰렛을 실행한 수치가 포함될 수 있습니다. 따라서 과거 48·72·36 등 규칙적인 wheel 집계는 외부 사용자 수요로 해석하지 않습니다.
+- 변경 이후 새 집계를 시장 신호 판단의 새 기준선으로 사용합니다.
+
 ## Cloudflare 설정
 
 1. Cloudflare 대시보드에서 D1 데이터베이스 `random-ppobgi-analytics`를 생성합니다.
