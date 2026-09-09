@@ -7,7 +7,7 @@ on:
       - '**/*.md'
   workflow_dispatch:
   schedule:
-    - cron: '20 */6 * * *'
+    - cron: '20 0 * * *'
 
 permissions:
   contents: read
