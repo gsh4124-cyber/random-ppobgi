@@ -8,6 +8,7 @@ const ALLOWED = Object.freeze({
 
 const FIELDS = Object.freeze(Object.keys(ALLOWED));
 const MAX_BODY_BYTES = 1024;
+const AUTOMATION_UA = /HeadlessChrome|Playwright/i;
 
 function response(status) {
   return new Response(null, {
@@ -24,6 +25,19 @@ function isSameOrigin(request) {
   if (!origin) return false;
   try {
     return new URL(origin).origin === new URL(request.url).origin;
+  } catch {
+    return false;
+  }
+}
+
+function isAutomatedQa(request) {
+  const userAgent = request.headers.get('user-agent') || '';
+  if (AUTOMATION_UA.test(userAgent)) return true;
+
+  const referer = request.headers.get('referer');
+  if (!referer) return false;
+  try {
+    return new URL(referer).searchParams.get('qa') === '1';
   } catch {
     return false;
   }
@@ -46,6 +60,7 @@ function isConsistentPayload(payload) {
 async function handlePost(context) {
   const { request, env } = context;
   if (!isSameOrigin(request)) return response(403);
+  if (isAutomatedQa(request)) return response(204);
   if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) return response(415);
 
   const declaredLength = Number(request.headers.get('content-length') || 0);
