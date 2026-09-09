@@ -96,3 +96,7 @@ Production D1: `random-ppobgi-analytics`
 현재 상태:
 
 `IMPLEMENTED / EXACT_CLOUDFLARE_DEPLOYMENT_CONFIRMED / PRODUCTION_BROWSER_QA_PASS / HUMAN_NATIVE_FEEL_UNVERIFIED / SEARCH_DISTRIBUTION_ACTIVE / ADSENSE_PREP`
+
+## AdSense 실행 상태 — 2026-09-10
+
+`ADSENSE_REVIEW_SUBMITTED` — 공식 코드와 ads.txt 반영, Production 소유확인 통과, 검토 요청 제출. 자동 광고는 인페이지 중심으로 사용하며 앵커·사이드레일·모바일 전면광고는 비활성화. ads.txt UI 재탐색 대기 중.
