@@ -19,6 +19,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Blender runtime libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1 libxrender1 libxi6 libxkbcommon0 libxfixes3 libxxf86vm1
+
       - name: Download Blender 5.2.2
         run: |
           mkdir -p .cache/blender
@@ -26,6 +31,8 @@ jobs:
           tar -xf .cache/blender/blender.tar.xz -C .cache/blender
 
       - name: Blender headless smoke
+        env:
+          EGL_PLATFORM: surfaceless
         run: |
           .cache/blender/blender-5.2.2-linux-x64/blender             --background --factory-startup             --python global_shorts_runner/smoke_scene.py
 
