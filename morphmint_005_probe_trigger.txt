@@ -1,1 +1,1 @@
-trigger morphmint 005 remote probe
+trigger morphmint 005 remote probe persist v2
