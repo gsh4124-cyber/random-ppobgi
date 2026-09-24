@@ -1,1 +1,1 @@
-trigger public blender smoke
+trigger public blender smoke v2
