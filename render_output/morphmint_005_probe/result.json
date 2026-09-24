@@ -1,0 +1,11 @@
+{
+  "marker": "MORPHMINT_005_PUBLIC_REMOTE_3STATE_PASS",
+  "resolution": "360x640",
+  "engine": "BLENDER_EEVEE",
+  "renders": [
+    "render_output/morphmint_005_probe/ceramic.png",
+    "render_output/morphmint_005_probe/chrome.png",
+    "render_output/morphmint_005_probe/crystal.png"
+  ],
+  "note": "Execution/readability probe only; not final 90-point quality gate."
+}
