@@ -43,8 +43,8 @@ jobs:
           test -s render_output/morphmint_005_probe/ceramic.png
           test -s render_output/morphmint_005_probe/chrome.png
           test -s render_output/morphmint_005_probe/crystal.png
-          grep -q "MORPHMINT_005_PUBLIC_REMOTE_3STATE_PASS" render_output/morphmint_005_probe/result.json
-          echo "MORPHMINT_005_PUBLIC_REMOTE_3STATE_PASS"
+          grep -q "MORPHMINT_005_PUBLIC_REMOTE_3STATE_V2_PASS" render_output/morphmint_005_probe/result.json
+          echo "MORPHMINT_005_PUBLIC_REMOTE_3STATE_V2_PASS"
 
       - name: Persist compact proof to PR branch
         run: |
