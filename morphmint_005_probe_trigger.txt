@@ -1,1 +1,1 @@
-trigger morphmint 005 remote probe persist v2
+trigger morphmint 005 visual qa v2
